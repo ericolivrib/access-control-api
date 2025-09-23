@@ -1,8 +1,11 @@
 import datasource from "@/datasource";
 import { randomUUID, UUID } from "node:crypto";
 import { Model, DataTypes, Optional } from "sequelize";
+import bcrypt from "bcryptjs";
 
 type UserRole = 'admin' | 'user';
+
+const SALT_ROUNDS = 12;
 
 interface UserAttributes {
   id: UUID;
@@ -53,9 +56,13 @@ User.init({
     allowNull: false,
     validate: {
       len: {
-        msg: 'A senha deve ter entre 6 e 100 caracteres',
+        msg: 'A senha deve ter entre 8 e 100 caracteres',
         args: [8, 100],
       },
+    },
+    set(raw: string) {
+      const salt = bcrypt.genSaltSync(SALT_ROUNDS);
+      this.setDataValue('password', bcrypt.hashSync(raw, salt));
     },
   }
 }, {
