@@ -22,6 +22,10 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
   public static async findByEmail(email: string): Promise<User | null> {
     return User.findOne({ where: { email } });
   }
+
+  public isPasswordValid(password: string): boolean {
+    return bcrypt.compareSync(password, this.dataValues.password);
+  }
 }
 
 User.init({

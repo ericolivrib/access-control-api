@@ -1,6 +1,7 @@
 import { ApiResponseSchema } from "@/schemas/api-response.schema";
 import { ChangeUserActivationSchema } from "@/schemas/change-user-activation.schema";
 import { CreateUserSchema } from "@/schemas/create-user.schema";
+import { LoginSchema } from "@/schemas/login.schema";
 import { authService } from "@/services/auth.service";
 import { Request, Response } from "express";
 
@@ -26,7 +27,18 @@ async function registerUser(req: Request, res: Response) {
     .json(responseBody);
 }
 
-async function login(req: Request, res: Response) { }
+async function login(req: Request, res: Response) {
+  const { email, password }: LoginSchema = req.body;
+
+  const accessToken = await authService.login(email, password);
+
+  const responseBody: ApiResponseSchema = {
+    message: 'Login realizado com sucesso',
+    data: accessToken
+  };
+
+  res.status(200).json(responseBody);
+}
 
 async function changeUserActivation(req: Request, res: Response) {
   const userId = req.params.id;

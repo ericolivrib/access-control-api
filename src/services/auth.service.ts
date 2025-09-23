@@ -1,14 +1,19 @@
 import { ConflictError } from "@/errors/ConflictError";
 import { NotFoundError } from "@/errors/NotFoundError";
+import { UnauthorizedError } from "@/errors/UnauthorizedError";
 import User from "@/models/users.model";
+import { accessTokenSchema, AccessTokenSchema } from "@/schemas/access-token.schema";
 import { CreateUserSchema } from "@/schemas/create-user.schema";
 import { userWithoutPasswordSchema, UserWithoutPasswordSchema } from "@/schemas/user-without-password.schema";
 import logger from "@/utils/logger";
 import { IPage, paginate } from "@/utils/pagination";
+import { randomUUID } from "node:crypto";
+import jwt from "jsonwebtoken";
+import ms from 'ms'
 
 export interface IAuthService {
   registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema>;
-  login(username: string, password: string): Promise<string>;
+  login(email: string, password: string): Promise<AccessTokenSchema>;
   changeUserActivation(userId: string, isActive: boolean): Promise<UserWithoutPasswordSchema>;
   getUsers(page: number, pageSize: number): Promise<IPage<UserWithoutPasswordSchema>>;
 }
@@ -23,6 +28,40 @@ async function registerUser(user: CreateUserSchema): Promise<UserWithoutPassword
 
   const createdUser = await User.create(user);
   return userWithoutPasswordSchema.parse(createdUser.dataValues);
+}
+
+async function login(email: string, password: string): Promise<AccessTokenSchema> {
+  const user = await User.findByEmail(email);
+
+  if (user === null) {
+    logger.info({ email }, 'Tentativa de login com usuário inexistente');
+    throw new UnauthorizedError('Credenciais inválidas');
+  }
+
+  const invalidPassword = !user.isPasswordValid(password);
+
+  if (invalidPassword) {
+    logger.info({ email }, 'Tentativa de login com senha inválida');
+    throw new UnauthorizedError('Credenciais inválidas');
+  }
+
+  const payload = {
+    iss: process.env.JWT_ISSUER_CLAIM,
+    sub: user.dataValues.id,
+    jti: randomUUID(),
+    role: user.dataValues.role
+  };
+
+  const expiresIn: ms.StringValue = (process.env.JWT_EXPIRATION_TIME || '1h') as ms.StringValue;
+  const secret = String(process.env.JWT_SECRET)
+
+  logger.info({ email }, 'Gerando token de acesso para o usuário');
+  const token = jwt.sign(payload, secret, { expiresIn });
+
+  return accessTokenSchema.parse({
+    token,
+    expiresAt: new Date(Date.now() + ms(expiresIn))
+  });
 }
 
 async function changeUserActivation(userId: string, active: boolean): Promise<UserWithoutPasswordSchema> {
@@ -60,9 +99,7 @@ async function getUsers(page: number, pageSize: number): Promise<IPage<UserWitho
 
 export const authService: IAuthService = {
   registerUser,
-  login: function (username: string, password: string): Promise<string> {
-    throw new Error("Function not implemented.");
-  },
+  login,
   changeUserActivation,
   getUsers
 }
