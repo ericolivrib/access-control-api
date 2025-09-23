@@ -26,4 +26,6 @@ Resource.init({
   tableName: "resources",
 });
 
+Resource.sync();
+
 export default Resource;

@@ -69,4 +69,6 @@ User.hasMany(Access, { foreignKey: 'userId', as: 'accesses' });
 Access.belongsTo(Resource, { foreignKey: 'resourceId', as: 'resource' });
 Resource.hasMany(Access, { foreignKey: 'resourceId', as: 'accesses' });
 
+Access.sync();
+
 export default Access;
