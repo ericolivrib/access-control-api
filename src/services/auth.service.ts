@@ -3,8 +3,10 @@ import { NotFoundError } from "@/errors/NotFoundError";
 import User from "@/models/users.model";
 import { CreateUserSchema } from "@/schemas/create-user.schema";
 import { userWithoutPasswordSchema, UserWithoutPasswordSchema } from "@/schemas/user-without-password.schema";
+import logger from "@/utils/logger";
 import { IPage, paginate } from "@/utils/pagination";
 import { resolve } from "path";
+import { email } from "zod";
 import { th } from "zod/v4/locales";
 
 export interface IAuthService {
@@ -18,6 +20,7 @@ async function registerUser(user: CreateUserSchema): Promise<UserWithoutPassword
   const userCount = await User.count({ where: { email: user.email } });
 
   if (userCount > 0) {
+    logger.info({ email }, 'Tentativa de cadastro com e-mail já existente');
     throw new ConflictError('O e-mail informado já está em uso');
   }
 
@@ -31,10 +34,12 @@ async function changeUserActivation(userId: string, active: boolean): Promise<Us
   });
 
   if (!user) {
+    logger.info({ userId }, 'Tentativa de alteração de status de usuário inexistente');
     throw new NotFoundError('Usuário não encontrado');
   }
 
   if (user.dataValues.active === active) {
+    logger.info({ userId, active }, 'Tentativa de alteração de status de usuário para o mesmo status');
     throw new ConflictError(`Não é possível ${active ? 'ativar' : 'desativar'} um usuário que já está ${active ? 'ativo' : 'inativo'}`);
   }
 
