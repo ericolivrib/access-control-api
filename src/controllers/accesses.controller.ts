@@ -1,11 +1,27 @@
 import { Request, Response } from "express";
 
-export async function grantAccess(req: Request, res: Response) { }
+interface IAccessController {
+  grantAccess(req: Request, res: Response): Promise<void>;
+  getUserAccesses(req: Request, res: Response): Promise<void>;
+  getAllAccesses(req: Request, res: Response): Promise<void>;
+  changeAccessExpirationDate(req: Request, res: Response): Promise<void>;
+  revokeAccess(req: Request, res: Response): Promise<void>;
+}
 
-export async function getUserAccesses(req: Request, res: Response) { }
+async function grantAccess(req: Request, res: Response) { }
 
-export async function getAllAccesses(req: Request, res: Response) { }
+async function getUserAccesses(req: Request, res: Response) { }
 
-export async function changeAccessExpirationDate(req: Request, res: Response) { }
+async function getAllAccesses(req: Request, res: Response) { }
 
-export async function revokeAccess(req: Request, res: Response) { }
+async function changeAccessExpirationDate(req: Request, res: Response) { }
+
+async function revokeAccess(req: Request, res: Response) { }
+
+export const AccessController: IAccessController = {
+  grantAccess,
+  getUserAccesses,
+  getAllAccesses,
+  changeAccessExpirationDate,
+  revokeAccess,
+};
