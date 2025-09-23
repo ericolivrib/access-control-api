@@ -16,6 +16,7 @@ export interface IAuthService {
   login(email: string, password: string): Promise<AccessTokenSchema>;
   changeUserActivation(userId: string, isActive: boolean): Promise<UserWithoutPasswordSchema>;
   getUsers(page: number, pageSize: number): Promise<IPage<UserWithoutPasswordSchema>>;
+  getUserById(userId: string): Promise<UserWithoutPasswordSchema>;
 }
 
 async function registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema> {
@@ -97,9 +98,23 @@ async function getUsers(page: number, pageSize: number): Promise<IPage<UserWitho
   return paginate(parsedUsers, page, pageSize, count);
 }
 
+async function getUserById(userId: string): Promise<UserWithoutPasswordSchema> {
+  const user = await User.findByPk(userId, {
+    attributes: { exclude: ['password'] }
+  });
+
+  if (user === null) {
+    logger.info({ userId }, 'Tentativa de busca por usuário inexistente');
+    throw new NotFoundError('Usuário não encontrado');
+  }
+
+  return userWithoutPasswordSchema.parse(user.dataValues);
+}
+
 export const authService: IAuthService = {
   registerUser,
   login,
   changeUserActivation,
-  getUsers
+  getUsers,
+  getUserById
 }
