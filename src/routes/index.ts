@@ -3,6 +3,7 @@ import { authController } from '@/controllers/auth.controller';
 import { ResourceController } from '@/controllers/resources.controller';
 import captureError from '@/middlewares/captureError';
 import validateRequestBody from '@/middlewares/validateRequestBody';
+import verifyJwt from '@/middlewares/verifyJwt';
 import { changeUserActivationSchema } from '@/schemas/change-user-activation.schema';
 import { createUserSchema } from '@/schemas/create-user.schema';
 import { loginSchema } from '@/schemas/login.schema';
@@ -14,9 +15,9 @@ router.post('/v1/auth/register', validateRequestBody(createUserSchema), captureE
 
 router.post('/v1/auth/login', validateRequestBody(loginSchema), authController.login);
 
-router.get('/v1/users', authController.getUsers);
+router.get('/v1/users', verifyJwt, authController.getUsers);
 
-router.patch('/v1/users/:id', validateRequestBody(changeUserActivationSchema), authController.changeUserActivation);
+router.patch('/v1/users/:id', verifyJwt, validateRequestBody(changeUserActivationSchema), authController.changeUserActivation);
 
 router.get('/v1/accesses', AccessController.getAllAccesses);
 
