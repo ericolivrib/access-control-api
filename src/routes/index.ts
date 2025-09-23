@@ -3,6 +3,7 @@ import { authController } from '@/controllers/auth.controller';
 import { ResourceController } from '@/controllers/resources.controller';
 import captureError from '@/middlewares/captureError';
 import validateRequestBody from '@/middlewares/validateRequestBody';
+import { changeUserActivationSchema } from '@/schemas/change-user-activation.schema';
 import { createUserSchema } from '@/schemas/create-user.schema';
 import e from 'express';
 
@@ -14,7 +15,7 @@ router.post('/v1/auth/login', authController.login);
 
 router.get('/v1/users', authController.getUsers);
 
-router.patch('/v1/users/:id', authController.changeUserActivation);
+router.patch('/v1/users/:id', validateRequestBody(changeUserActivationSchema), authController.changeUserActivation);
 
 router.get('/v1/accesses', AccessController.getAllAccesses);
 
