@@ -1,5 +1,5 @@
 import datasource from "@/datasource";
-import { UUID } from "node:crypto";
+import { randomUUID, UUID } from "node:crypto";
 import { DataTypes, Model, Optional } from "sequelize";
 import User from "./users.model";
 import Resource from "./resources.model";
@@ -27,7 +27,7 @@ Access.init({
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
-    defaultValue: DataTypes.UUIDV4,
+    defaultValue: randomUUID(),
   },
   status: {
     type: DataTypes.ENUM('granted', 'revoked', 'expired'),
