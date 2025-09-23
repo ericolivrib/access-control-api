@@ -1,19 +1,20 @@
 import { AccessController } from '@/controllers/accesses.controller';
-import { AuthController } from '@/controllers/auth.controller';
+import { authController } from '@/controllers/auth.controller';
 import { ResourceController } from '@/controllers/resources.controller';
+import captureError from '@/middlewares/captureError';
 import validateRequestBody from '@/middlewares/validateRequestBody';
 import { createUserSchema } from '@/schemas/create-user.schema';
 import e from 'express';
 
 const router = e.Router();
 
-router.post('/v1/auth/register', validateRequestBody(createUserSchema), AuthController.registerUser);
+router.post('/v1/auth/register', validateRequestBody(createUserSchema), captureError(authController.registerUser));
 
-router.post('/v1/auth/login', AuthController.login);
+router.post('/v1/auth/login', authController.login);
 
-router.get('/v1/users', AuthController.getUsers);
+router.get('/v1/users', authController.getUsers);
 
-router.patch('/v1/users/:id', AuthController.changeUserActivation);
+router.patch('/v1/users/:id', authController.changeUserActivation);
 
 router.get('/v1/accesses', AccessController.getAllAccesses);
 
