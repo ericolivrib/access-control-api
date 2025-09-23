@@ -5,9 +5,6 @@ import { CreateUserSchema } from "@/schemas/create-user.schema";
 import { userWithoutPasswordSchema, UserWithoutPasswordSchema } from "@/schemas/user-without-password.schema";
 import logger from "@/utils/logger";
 import { IPage, paginate } from "@/utils/pagination";
-import { resolve } from "path";
-import { email } from "zod";
-import { th } from "zod/v4/locales";
 
 export interface IAuthService {
   registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema>;
@@ -20,7 +17,7 @@ async function registerUser(user: CreateUserSchema): Promise<UserWithoutPassword
   const userCount = await User.count({ where: { email: user.email } });
 
   if (userCount > 0) {
-    logger.info({ email }, 'Tentativa de cadastro com e-mail já existente');
+    logger.info({ email: user.email }, 'Tentativa de cadastro com e-mail já existente');
     throw new ConflictError('O e-mail informado já está em uso');
   }
 
