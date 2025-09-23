@@ -1,13 +1,16 @@
 import { Sequelize } from 'sequelize';
+import logger from './utils/logger';
 
-const datasource = new Sequelize('sqlite:memory:');
+const datasource = new Sequelize('sqlite:memory:', {
+  logging: (msg) => logger.debug(msg),
+});
 
 export async function connect() {
   try {
     await datasource.authenticate();
-    console.log('Conexão estabelecida com sucesso.');
+    logger.info('Conexão estabelecida com sucesso.');
   } catch (error) {
-    console.error('Falha na conexão com a base de dados:', error);
+    logger.error('Falha na conexão com a base de dados');
   }
 }
 
