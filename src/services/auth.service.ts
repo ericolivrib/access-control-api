@@ -3,6 +3,7 @@ import { NotFoundError } from "@/errors/NotFoundError";
 import User from "@/models/users.model";
 import { CreateUserSchema } from "@/schemas/create-user.schema";
 import { userWithoutPasswordSchema, UserWithoutPasswordSchema } from "@/schemas/user-without-password.schema";
+import { IPage, paginate } from "@/utils/pagination";
 import { resolve } from "path";
 import { th } from "zod/v4/locales";
 
@@ -10,7 +11,7 @@ export interface IAuthService {
   registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema>;
   login(username: string, password: string): Promise<string>;
   changeUserActivation(userId: string, isActive: boolean): Promise<UserWithoutPasswordSchema>;
-  getUsers(): Promise<UserWithoutPasswordSchema[]>;
+  getUsers(page: number, pageSize: number): Promise<IPage<UserWithoutPasswordSchema>>;
 }
 
 async function registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema> {
@@ -41,9 +42,18 @@ async function changeUserActivation(userId: string, active: boolean): Promise<Us
   return userWithoutPasswordSchema.parse(user.dataValues);
 }
 
-async function getUsers(): Promise<UserWithoutPasswordSchema[]> {
-  const users = await User.findAll({ attributes: ['id', 'name', 'email', 'role', 'active'] });
-  return users.map(u => userWithoutPasswordSchema.parse(u.dataValues));
+async function getUsers(page: number, pageSize: number): Promise<IPage<UserWithoutPasswordSchema>> {
+  const offset = (page - 1) * pageSize;
+
+  const { count, rows: users } = await User.findAndCountAll({
+    attributes: ['id', 'name', 'email', 'role', 'active'],
+    limit: pageSize,
+    offset,
+    order: [['name', 'ASC']]
+  });
+
+  const parsedUsers = users.map(u => userWithoutPasswordSchema.parse(u.dataValues));
+  return paginate(parsedUsers, page, pageSize, count);
 }
 
 export const authService: IAuthService = {
