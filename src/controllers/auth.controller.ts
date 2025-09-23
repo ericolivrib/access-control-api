@@ -49,7 +49,9 @@ async function getUsers(req: Request, res: Response) {
   const usersPage = await authService.getUsers(page, pageSize);
 
   const responseBody: ApiResponseSchema = {
-    message: 'Página de usuários recuperada com sucesso',
+    message: usersPage.totalItems > 0
+      ? 'Página de usuários recuperada com sucesso'
+      : 'Não há usuários cadastrados',
     data: usersPage
   };
 
