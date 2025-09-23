@@ -18,7 +18,6 @@ async function registerUser(user: CreateUserSchema): Promise<UserWithoutPassword
   }
 
   const createdUser = await User.create(user);
-  console.table(createdUser);
   return userWithoutPasswordSchema.parse(createdUser.dataValues);
 }
 
