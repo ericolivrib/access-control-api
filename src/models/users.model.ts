@@ -1,10 +1,11 @@
 import datasource from "@/datasource";
+import { randomUUID, UUID } from "node:crypto";
 import { Model, DataTypes, Optional } from "sequelize";
 
 type UserRole = 'admin' | 'user';
 
 interface UserAttributes {
-  id: number;
+  id: UUID;
   name: string;
   email: string;
   password: string;
@@ -20,7 +21,7 @@ User.init({
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
-    autoIncrement: true,
+    defaultValue: randomUUID(),
   },
   active: {
     type: DataTypes.BOOLEAN,
