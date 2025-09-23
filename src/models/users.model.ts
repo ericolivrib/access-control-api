@@ -14,9 +14,9 @@ interface UserAttributes {
 
 type UserCreationAttributes = Optional<UserAttributes, 'id' | 'active' | 'role'>;;
 
-class UserModel extends Model<UserAttributes, UserCreationAttributes> { }
+class User extends Model<UserAttributes, UserCreationAttributes> { }
 
-UserModel.init({
+User.init({
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
@@ -58,4 +58,4 @@ UserModel.init({
   tableName: "users",
 });
 
-export default UserModel;
+export default User;

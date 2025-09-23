@@ -1,8 +1,8 @@
 import datasource from "@/datasource";
 import { UUID } from "node:crypto";
-import { DataTypes, Model } from "sequelize";
-import UserModel from "./users.model";
-import ResourceModel from "./resources.model";
+import { DataTypes, Model, Optional } from "sequelize";
+import User from "./users.model";
+import Resource from "./resources.model";
 
 type AccessStatus = 'granted' | 'revoked' | 'expired';
 
@@ -19,11 +19,11 @@ interface AccessAttributes {
   revokedAt: Date;
 }
 
-type AccessCreationAttributes = Omit<AccessAttributes, 'id' | 'status' | 'revokedAt'>;
+type AccessCreationAttributes = Optional<AccessAttributes, 'id' | 'status' | 'revokedAt'>;
 
-class AccessModel extends Model<AccessAttributes, AccessCreationAttributes> { }
+class Access extends Model<AccessAttributes, AccessCreationAttributes> { }
 
-AccessModel.init({
+Access.init({
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
@@ -63,10 +63,10 @@ AccessModel.init({
   tableName: "accesses",
 });
 
-AccessModel.belongsTo(UserModel, { foreignKey: 'userId', as: 'user' });
-UserModel.hasMany(AccessModel, { foreignKey: 'userId', as: 'accesses' });
+Access.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+User.hasMany(Access, { foreignKey: 'userId', as: 'accesses' });
 
-AccessModel.belongsTo(ResourceModel, { foreignKey: 'resourceId', as: 'resource' });
-ResourceModel.hasMany(AccessModel, { foreignKey: 'resourceId', as: 'accesses' });
+Access.belongsTo(Resource, { foreignKey: 'resourceId', as: 'resource' });
+Resource.hasMany(Access, { foreignKey: 'resourceId', as: 'accesses' });
 
-export default AccessModel;
+export default Access;

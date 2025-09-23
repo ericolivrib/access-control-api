@@ -8,9 +8,9 @@ interface ResourceAttributes {
 
 type ResourceCreationAttributes = Optional<ResourceAttributes, 'id'>;
 
-export class ResourceModel extends Model<ResourceAttributes, ResourceCreationAttributes> { }
+export class Resource extends Model<ResourceAttributes, ResourceCreationAttributes> { }
 
-ResourceModel.init({
+Resource.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -26,4 +26,4 @@ ResourceModel.init({
   tableName: "resources",
 });
 
-export default ResourceModel;
+export default Resource;
