@@ -1,13 +1,15 @@
 import { ConflictError } from "@/errors/ConflictError";
+import { NotFoundError } from "@/errors/NotFoundError";
 import User from "@/models/users.model";
 import { CreateUserSchema } from "@/schemas/create-user.schema";
 import { userWithoutPasswordSchema, UserWithoutPasswordSchema } from "@/schemas/user-without-password.schema";
 import { resolve } from "path";
+import { th } from "zod/v4/locales";
 
 export interface IAuthService {
   registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema>;
   login(username: string, password: string): Promise<string>;
-  changeUserActivation(userId: string, isActive: boolean): Promise<void>;
+  changeUserActivation(userId: string, isActive: boolean): Promise<UserWithoutPasswordSchema>;
   getUsers(): Promise<UserWithoutPasswordSchema[]>;
 }
 
@@ -22,6 +24,23 @@ async function registerUser(user: CreateUserSchema): Promise<UserWithoutPassword
   return userWithoutPasswordSchema.parse(createdUser.dataValues);
 }
 
+async function changeUserActivation(userId: string, active: boolean): Promise<UserWithoutPasswordSchema> {
+  const user = await User.findByPk(userId, {
+    attributes: { exclude: ['password'] }
+  });
+
+  if (!user) {
+    throw new NotFoundError('Usuário não encontrado');
+  }
+
+  if (user.dataValues.active === active) {
+    throw new ConflictError(`Não é possível ${active ? 'ativar' : 'desativar'} um usuário que já está ${active ? 'ativo' : 'inativo'}`);
+  }
+
+  await user.update({ active });
+  return userWithoutPasswordSchema.parse(user.dataValues);
+}
+
 async function getUsers(): Promise<UserWithoutPasswordSchema[]> {
   const users = await User.findAll({ attributes: ['id', 'name', 'email', 'role', 'active'] });
   return users.map(u => userWithoutPasswordSchema.parse(u.dataValues));
@@ -32,8 +51,6 @@ export const authService: IAuthService = {
   login: function (username: string, password: string): Promise<string> {
     throw new Error("Function not implemented.");
   },
-  changeUserActivation: function (userId: string, isActive: boolean): Promise<void> {
-    throw new Error("Function not implemented.");
-  },
+  changeUserActivation,
   getUsers
 }

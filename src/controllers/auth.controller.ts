@@ -25,7 +25,19 @@ async function registerUser(req: Request, res: Response) {
 
 async function login(req: Request, res: Response) { }
 
-async function changeUserActivation(req: Request, res: Response) { }
+async function changeUserActivation(req: Request, res: Response) {
+  const userId = req.params.id;
+  const { active }: ChangeUserActivationSchema = req.body;
+
+  const updatedUser = await authService.changeUserActivation(userId, active);
+
+  const responseBody: ApiResponseSchema = {
+    message: `Usuário ${active ? 'ativado' : 'desativado'} com sucesso`,
+    data: updatedUser
+  };
+
+  res.status(200).json(responseBody);
+}
 
 async function getUsers(req: Request, res: Response) {
   const users = await authService.getUsers();
