@@ -27,7 +27,16 @@ async function login(req: Request, res: Response) { }
 
 async function changeUserActivation(req: Request, res: Response) { }
 
-async function getUsers(req: Request, res: Response) { }
+async function getUsers(req: Request, res: Response) {
+  const users = await authService.getUsers();
+
+  const responseBody: ApiResponseSchema = {
+    message: 'Lista de usuários recuperada com sucesso',
+    data: users
+  };
+
+  res.status(200).json(responseBody);
+}
 
 export const authController: IAuthController = {
   registerUser,
