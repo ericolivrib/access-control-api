@@ -12,12 +12,14 @@
   "license": "ISC",
   "description": "API de gerenciamento de acessos",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.2",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "express": "^5.1.0",
     "pino": "^9.11.0",
     "pino-pretty": "^13.1.1",
