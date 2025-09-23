@@ -15,7 +15,11 @@ interface UserAttributes {
 
 type UserCreationAttributes = Optional<UserAttributes, 'id' | 'active' | 'role'>;;
 
-class User extends Model<UserAttributes, UserCreationAttributes> { }
+class User extends Model<UserAttributes, UserCreationAttributes> {
+  public static async findByEmail(email: string): Promise<User | null> {
+    return User.findOne({ where: { email } });
+  }
+}
 
 User.init({
   id: {
@@ -58,5 +62,7 @@ User.init({
   sequelize: datasource,
   tableName: "users",
 });
+
+User.sync();
 
 export default User;
