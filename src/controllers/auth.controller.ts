@@ -1,4 +1,5 @@
 import { ApiResponseSchema } from "@/schemas/api-response.schema";
+import { ChangeUserActivationSchema } from "@/schemas/change-user-activation.schema";
 import { CreateUserSchema } from "@/schemas/create-user.schema";
 import { authService } from "@/services/auth.service";
 import { Request, Response } from "express";
@@ -20,7 +21,9 @@ async function registerUser(req: Request, res: Response) {
     data: createdUser
   };
 
-  res.status(201).json(responseBody);
+  res.status(201)
+    .location(`/v1/users/${createdUser.id}`)
+    .json(responseBody);
 }
 
 async function login(req: Request, res: Response) { }
