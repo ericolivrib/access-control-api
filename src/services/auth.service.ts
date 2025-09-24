@@ -10,6 +10,7 @@ import { IPage, paginate } from "@/utils/pagination";
 import { randomUUID } from "node:crypto";
 import jwt from "jsonwebtoken";
 import ms from 'ms'
+import { environment } from "@/schemas/env.schema";
 
 export interface IAuthService {
   registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema>;
@@ -47,21 +48,21 @@ async function login(email: string, password: string): Promise<AccessTokenSchema
   }
 
   const payload = {
-    iss: process.env.JWT_ISSUER_CLAIM,
+    iss: environment.JWT_ISSUER,
     sub: user.dataValues.id,
     jti: randomUUID(),
     role: user.dataValues.role
   };
 
-  const expiresIn: ms.StringValue = (process.env.JWT_EXPIRATION_TIME || '1h') as ms.StringValue;
-  const secret = String(process.env.JWT_SECRET)
+  const expiresIn = ms(environment.JWT_EXPIRES_IN as ms.StringValue);
+  const secret = environment.JWT_SECRET
 
   logger.info({ email }, 'Gerando token de acesso para o usuário');
   const token = jwt.sign(payload, secret, { expiresIn });
 
   return accessTokenSchema.parse({
     token,
-    expiresAt: new Date(Date.now() + ms(expiresIn))
+    expiresAt: new Date(Date.now() + expiresIn)
   });
 }
 

@@ -1,4 +1,5 @@
 import { UnauthorizedError } from "@/errors/UnauthorizedError";
+import { environment } from "@/schemas/env.schema";
 import { authService } from "@/services/auth.service";
 import logger from "@/utils/logger";
 import { NextFunction, Request, Response } from "express";
@@ -14,7 +15,7 @@ export default async function verifyJwt(req: Request, res: Response, next: NextF
   }
 
   let userId: string | undefined;
-  const secret = String(process.env.JWT_SECRET);
+  const secret = environment.JWT_SECRET;
 
   jwt.verify(token, secret, (err, payload) => {
     if (err) {
