@@ -1,7 +1,8 @@
 import { Sequelize } from 'sequelize';
 import logger from './utils/logger';
+import { environment } from './schemas/env.schema';
 
-const datasource = new Sequelize('sqlite:memory:', {
+const datasource = new Sequelize(environment.DATABASE_URL, {
   logging: (msg) => logger.debug(msg),
 });
 
