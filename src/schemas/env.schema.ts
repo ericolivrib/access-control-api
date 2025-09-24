@@ -14,6 +14,7 @@ export const envSchema = z.object({
   JWT_EXPIRES_IN: z.string()
     .regex(/^(\d+)([smhd])$/, "Tempo de expiração do JWT deve estar no formato <número><s|m|h|d> (ex: 1h, 30m)")
     .default('1h'),
+  JWT_ISSUER: z.string('Emissor do JWT deve ser informado').min(1, "Emissor do JWT é obrigatório"),
   SEEDER_ADMIN_PASSWORD: z.string().min(8, "Senha do administrador deve ter no mínimo 8 caracteres").optional(),
   SEEDER_ADMIN_EMAIL: z.email("E-mail do administrador válido").optional(),
 });
