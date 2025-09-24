@@ -1,7 +1,7 @@
 import logger from "@/utils/logger";
 import z from "zod";
 
-export const envSchema = z.object({
+const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test'], 'Ambiente desconhecido').default('development'),
   SERVER_HOST: z.string().default('localhost'),
   SERVER_PORT: z.coerce.number().default(3000),
@@ -19,7 +19,7 @@ export const envSchema = z.object({
   SEEDER_ADMIN_EMAIL: z.email("E-mail do administrador válido").optional(),
 });
 
-export type EnvSchema = z.infer<typeof envSchema>;
+type EnvSchema = z.infer<typeof envSchema>;
 
 export const environment: EnvSchema = (() => {
   const parsedEnv = envSchema.safeParse(process.env);
