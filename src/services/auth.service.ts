@@ -54,7 +54,7 @@ async function login(email: string, password: string): Promise<AccessTokenSchema
     role: user.dataValues.role
   };
 
-  const expiresIn = ms(environment.JWT_EXPIRES_IN as ms.StringValue);
+  const expiresIn = environment.JWT_EXPIRES_IN as ms.StringValue;
   const secret = environment.JWT_SECRET
 
   logger.info({ email }, 'Gerando token de acesso para o usuário');
@@ -62,7 +62,7 @@ async function login(email: string, password: string): Promise<AccessTokenSchema
 
   return accessTokenSchema.parse({
     token,
-    expiresAt: new Date(Date.now() + expiresIn)
+    expiresAt: new Date(Date.now() + ms(expiresIn))
   });
 }
 
