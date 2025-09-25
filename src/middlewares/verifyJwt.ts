@@ -4,7 +4,28 @@ import { authService } from "@/services/auth.service";
 import logger from "@/utils/logger";
 import { NextFunction, Request, Response } from "express";
 
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+
+function throwJwtError(err: jwt.VerifyErrors) {
+  if (err instanceof jwt.TokenExpiredError) {
+    logger.info({ expiredAt: err.expiredAt }, "Tentativa de acesso com token expirado");
+    throw new UnauthorizedError('Token de acesso expirado');
+  }
+
+  if (err instanceof jwt.JsonWebTokenError) {
+    logger.info("Tentativa de acesso com token inválido");
+    throw new UnauthorizedError('Token de acesso inválido');
+  }
+}
+
+function extractToken(req: Request): string | null {
+  const token = req.headers['authorization'];
+
+  if (!token || !token.startsWith('Bearer')) {
+    return null;
+  }
+  return token.split(' ')[1];
+}
 
 export default async function verifyJwt(req: Request, res: Response, next: NextFunction) {
   const token = extractToken(req);
@@ -18,12 +39,8 @@ export default async function verifyJwt(req: Request, res: Response, next: NextF
   const secret = environment.JWT_SECRET;
 
   jwt.verify(token, secret, (err, payload) => {
-    if (err) {
-      logger.error(err, "Falha ao verificar o token JWT");
-      throw new UnauthorizedError('Token de acesso inválido ou expirado');
-    }
-
-    userId = (<JwtPayload>payload).sub;
+    if (err) throwJwtError(err);
+    userId = (<jwt.JwtPayload>payload).sub;
   });
 
   try {
@@ -35,13 +52,4 @@ export default async function verifyJwt(req: Request, res: Response, next: NextF
   }
 
   next();
-}
-
-function extractToken(req: Request): string | null {
-  const token = req.headers['authorization'];
-
-  if (!token || !token.startsWith('Bearer')) {
-    return null;
-  }
-  return token.split(' ')[1];
 }
