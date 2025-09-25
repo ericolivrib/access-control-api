@@ -3,6 +3,7 @@ import router from './routes';
 import handleError from './errors/handleError';
 import logger from './utils/logger';
 import { environment } from './schemas/env.schema';
+import { seedResources } from './seed/resources.seeder';
 
 const app = e();
 
@@ -15,4 +16,5 @@ app.use(handleError);
 
 app.listen(PORT, () => {
   logger.info(`Servidor rodando em http://${HOST}:${PORT}`);
+  seedResources();
 });
