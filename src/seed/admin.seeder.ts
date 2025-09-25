@@ -1,7 +1,5 @@
-import bcrypt from "bcryptjs";
 import User from "../models/users.model";
 import logger from "@/utils/logger";
-import { en } from "zod/v4/locales";
 import { environment } from "@/schemas/env.schema";
 
 export async function seedAdminUser() {
