@@ -14,7 +14,12 @@ app.use(e.json());
 app.use(router);
 app.use(handleError);
 
-app.listen(PORT, () => {
+app.listen(PORT, (err) => {
+  if (err) {
+    logger.error(err, 'Erro ao iniciar o servidor');
+    process.exit(1);
+  }
+
   logger.info(`Servidor rodando em http://${HOST}:${PORT}`);
   seedResources();
 });
