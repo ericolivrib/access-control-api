@@ -18,7 +18,7 @@ async function changeAccessExpirationDate(req: Request, res: Response) { }
 
 async function revokeAccess(req: Request, res: Response) { }
 
-export const AccessController: IAccessController = {
+export const accessController: IAccessController = {
   grantAccess,
   getUserAccesses,
   getAllAccesses,

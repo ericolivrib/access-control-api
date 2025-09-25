@@ -1,6 +1,6 @@
-import { AccessController } from '@/controllers/accesses.controller';
+import { accessController } from '@/controllers/accesses.controller';
 import { authController } from '@/controllers/auth.controller';
-import { ResourceController } from '@/controllers/resources.controller';
+import { ResourceController as resourceController } from '@/controllers/resources.controller';
 import captureError from '@/middlewares/captureError';
 import validateRequestBody from '@/middlewares/validateRequestBody';
 import verifyJwt from '@/middlewares/verifyJwt';
@@ -19,16 +19,16 @@ router.get('/v1/users', verifyJwt, authController.getUsers);
 
 router.patch('/v1/users/:id', verifyJwt, validateRequestBody(changeUserActivationSchema), authController.changeUserActivation);
 
-router.get('/v1/accesses', AccessController.getAllAccesses);
+router.get('/v1/accesses', accessController.getAllAccesses);
 
-router.post('/v1/users/:id/accesses', AccessController.grantAccess);
+router.post('/v1/users/:id/accesses', accessController.grantAccess);
 
-router.get('/v1/users/:id/accesses', AccessController.getUserAccesses);
+router.get('/v1/users/:id/accesses', accessController.getUserAccesses);
 
-router.patch('/v1/accesses/:id', AccessController.changeAccessExpirationDate);
+router.patch('/v1/accesses/:id', accessController.changeAccessExpirationDate);
 
-router.delete('/v1/accesses/:id', AccessController.revokeAccess);
+router.delete('/v1/accesses/:id', accessController.revokeAccess);
 
-router.get('/v1/resources', ResourceController.getResources);
+router.get('/v1/resources', resourceController.getResources);
 
 export default router;
