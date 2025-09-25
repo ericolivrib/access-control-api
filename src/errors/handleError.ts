@@ -15,7 +15,7 @@ export default function handleError(err: unknown, req: Request, res: Response, n
     return next(err);
   }
 
-  const { statusCode, message } = normalizeError(err);
+  const error = normalizeError(err);
 
-  res.status(statusCode).json({ message });
+  res.status(error.statusCode).json(error.body());
 }

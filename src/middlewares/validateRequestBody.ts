@@ -1,5 +1,6 @@
+import { UnprocessableEntityError } from "@/errors/UnprocessableEntityError";
 import { NextFunction, Request, Response } from "express";
-import { ZodType, flattenError, treeifyError } from "zod";
+import { ZodType, flattenError } from "zod";
 
 export default function validateRequestBody(schema: ZodType) {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -7,11 +8,7 @@ export default function validateRequestBody(schema: ZodType) {
 
     if (!result.success) {
       const { fieldErrors } = flattenError(result.error);
-
-      return res.status(422).json({ 
-        message: 'Falha ao validar dados de requisição',
-        errors: fieldErrors
-      });
+      throw new UnprocessableEntityError('Falha ao validar dados de requisição', fieldErrors);
     }
 
     next();
