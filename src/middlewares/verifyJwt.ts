@@ -31,7 +31,7 @@ export default async function verifyJwt(req: Request, res: Response, next: NextF
   const token = extractToken(req);
 
   if (token == null) {
-    logger.info("Token de acesso não fornecido");
+    logger.info("Tentativa de acesso sem token no cabeçalho de autorização");
     throw new UnauthorizedError("Token de acesso não fornecido");
   }
 
