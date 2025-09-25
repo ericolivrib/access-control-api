@@ -95,7 +95,7 @@ async function getUsers(page: number, pageSize: number): Promise<IPage<UserWitho
     order: [['name', 'ASC']]
   });
 
-  const parsedUsers = users.map(u => userWithoutPasswordSchema.parse(u.dataValues));
+  const parsedUsers = userWithoutPasswordSchema.array().parse(users);
   return paginate(parsedUsers, page, pageSize, count);
 }
 
