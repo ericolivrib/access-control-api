@@ -5,10 +5,9 @@ import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 import ms from "ms";
 import { environment } from "@/schemas/env.schema";
+import { hashPassword } from "@/utils/hash-password";
 
 type UserRole = 'admin' | 'user';
-
-const SALT_ROUNDS = 12;
 
 interface UserAttributes {
   id: UUID;
@@ -83,8 +82,8 @@ User.init({
       },
     },
     set(raw: string) {
-      const salt = bcrypt.genSaltSync(SALT_ROUNDS);
-      this.setDataValue('password', bcrypt.hashSync(raw, salt));
+      const hashedPassword = hashPassword(raw);
+      this.setDataValue('password', hashedPassword);
     },
   }
 }, {
