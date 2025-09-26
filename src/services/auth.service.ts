@@ -11,6 +11,7 @@ import { randomUUID } from "node:crypto";
 import jwt from "jsonwebtoken";
 import ms from 'ms'
 import { environment } from "@/schemas/env.schema";
+import { getJwtExpiration } from "@/utils/get-jwt-expiration";
 
 export interface IAuthService {
   registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema>;
@@ -47,22 +48,13 @@ async function login(email: string, password: string): Promise<AccessTokenSchema
     throw new UnauthorizedError('Credenciais inválidas');
   }
 
-  const payload = {
-    iss: environment.JWT_ISSUER,
-    sub: user.dataValues.id,
-    jti: randomUUID(),
-    role: user.dataValues.role
-  };
-
-  const expiresIn = environment.JWT_EXPIRES_IN as ms.StringValue;
-  const secret = environment.JWT_SECRET
-
   logger.info({ email }, 'Gerando token de acesso para o usuário');
-  const token = jwt.sign(payload, secret, { expiresIn });
+  const accessToken = user.generateAccessToken();
+  const expiresAt = getJwtExpiration(accessToken);
 
   return accessTokenSchema.parse({
-    token,
-    expiresAt: new Date(Date.now() + ms(expiresIn))
+    token: accessToken,
+    expiresAt
   });
 }
 

@@ -2,6 +2,9 @@ import datasource from "@/datasource";
 import { randomUUID, UUID } from "node:crypto";
 import { Model, DataTypes, Optional } from "sequelize";
 import bcrypt from "bcryptjs";
+import jwt from 'jsonwebtoken';
+import ms from "ms";
+import { environment } from "@/schemas/env.schema";
 
 type UserRole = 'admin' | 'user';
 
@@ -25,6 +28,21 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
 
   public isPasswordValid(password: string): boolean {
     return bcrypt.compareSync(password, this.dataValues.password);
+  }
+
+  public generateAccessToken(): string {
+    const payload = {
+      iss: environment.JWT_ISSUER,
+      sub: this.dataValues.id,
+      jti: randomUUID(),
+      role: this.dataValues.role
+    };
+  
+    const expiresIn = environment.JWT_EXPIRES_IN as ms.StringValue;
+    const secret = environment.JWT_SECRET
+  
+    const token = jwt.sign(payload, secret, { expiresIn });
+    return token;
   }
 }
 
