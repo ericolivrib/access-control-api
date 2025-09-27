@@ -1,5 +1,6 @@
 import datasource from "@/datasource";
 import { DataTypes, Model, Optional } from "sequelize";
+import Access from "./accesses.model";
 
 export const PERMISSION_TYPES = ['revoke_access', 'grant_access', 'update_access_expiration', 'create_user', 'update_user', 'get_users', 'change_user_activation'] as const;
 
@@ -9,9 +10,10 @@ interface PermissionAttributes {
   id: number;
   type: PermissionType;
   description: string;
+  accesses?: Access[];
 }
 
-type PermissionCreationAttributes = Optional<PermissionAttributes, 'id'>;
+type PermissionCreationAttributes = Optional<PermissionAttributes, 'id' | 'accesses'>;
 
 export class Permission extends Model<PermissionAttributes, PermissionCreationAttributes> { }
 
@@ -35,6 +37,10 @@ Permission.init({
   tableName: "permissions",
 });
 
-Permission.sync();
+Permission.hasMany(Access, {
+  sourceKey: 'id',
+  foreignKey: 'permissionId',
+  as: 'permissions'
+})
 
 export default Permission;

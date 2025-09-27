@@ -14,9 +14,11 @@ interface AccessAttributes {
   expiresAt: Date;
   grantedAt: Date;
   revokedAt: Date;
+  user?: User;
+  permission?: Permission;
 }
 
-type AccessCreationAttributes = Optional<AccessAttributes, 'id' | 'status' | 'revokedAt'>;
+type AccessCreationAttributes = Optional<AccessAttributes, 'id' | 'status' | 'revokedAt' | 'user' | 'permission'>;
 
 class Access extends Model<AccessAttributes, AccessCreationAttributes> { }
 
@@ -56,12 +58,16 @@ Access.init({
   tableName: "accesses",
 });
 
-Access.belongsTo(User, { foreignKey: 'userId', as: 'user' });
-User.hasMany(Access, { foreignKey: 'userId', as: 'accesses' });
+Access.belongsTo(User, {
+  targetKey: 'id',
+  foreignKey: 'userId',
+  as: 'user'
+});
 
-Access.belongsTo(Permission, { foreignKey: 'permissionId', as: 'permission' });
-Permission.hasMany(Access, { foreignKey: 'permissionId', as: 'accesses' });
-
-Access.sync();
+Access.belongsTo(Permission, {
+  targetKey: 'id',
+  foreignKey: 'permissionId',
+  as: 'permission'
+});
 
 export default Access;

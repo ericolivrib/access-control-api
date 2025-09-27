@@ -6,8 +6,9 @@ import jwt from 'jsonwebtoken';
 import ms from "ms";
 import { environment } from "@/schemas/env.schema";
 import { hashPassword } from "@/utils/hash-password";
+import Access from "./accesses.model";
 
-type UserRole = 'admin' | 'user';
+export type UserRole = 'admin' | 'user';
 
 interface UserAttributes {
   id: UUID;
@@ -16,9 +17,10 @@ interface UserAttributes {
   password: string;
   role: UserRole;
   active: boolean;
+  accesses?: Access[];
 }
 
-type UserCreationAttributes = Optional<UserAttributes, 'id' | 'active' | 'role'>;;
+type UserCreationAttributes = Optional<UserAttributes, 'id' | 'active' | 'role' | 'accesses'>;
 
 class User extends Model<UserAttributes, UserCreationAttributes> {
   public static async findByEmail(email: string): Promise<User | null> {
@@ -91,6 +93,10 @@ User.init({
   tableName: "users",
 });
 
-User.sync();
+User.hasMany(Access, {
+  sourceKey: 'id',
+  foreignKey: 'userId',
+  as: 'accesses'
+});
 
 export default User;
