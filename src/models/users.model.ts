@@ -7,6 +7,7 @@ import ms from "ms";
 import { environment } from "@/schemas/env.schema";
 import { hashPassword } from "@/utils/hash-password";
 import Access from "./accesses.model";
+import Permission from "./permissions.model";
 
 export type UserRole = 'admin' | 'user';
 
@@ -27,6 +28,23 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
     return User.findOne({ where: { email } });
   }
 
+  public static async findWithAccessesByPk(id: string): Promise<User | null> {
+    return User.findByPk(id, {
+      attributes: { exclude: ['password'] },
+      include: {
+        model: Access,
+        as: 'accesses',
+        where: {
+          status: 'granted'
+        },
+        include: [{
+          model: Permission,
+          as: 'permission'
+        }]
+      }
+    });
+  }
+
   public isPasswordValid(password: string): boolean {
     return bcrypt.compareSync(password, this.dataValues.password);
   }
@@ -38,10 +56,10 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
       jti: randomUUID(),
       role: this.dataValues.role
     };
-  
+
     const expiresIn = environment.JWT_EXPIRES_IN as ms.StringValue;
     const secret = environment.JWT_SECRET
-  
+
     const token = jwt.sign(payload, secret, { expiresIn });
     return token;
   }

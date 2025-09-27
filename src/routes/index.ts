@@ -4,6 +4,8 @@ import { permissionController } from '@/controllers/permissions.controller';
 import captureError from '@/middlewares/captureError';
 import validateRequestBody from '@/middlewares/validateRequestBody';
 import verifyJwt from '@/middlewares/verifyJwt';
+import verifyPermission from '@/middlewares/verifyPermissions';
+import { PermissionType } from '@/models/permissions.model';
 import { changeUserActivationSchema } from '@/schemas/change-user-activation.schema';
 import { createUserSchema } from '@/schemas/create-user.schema';
 import { loginSchema } from '@/schemas/login.schema';
@@ -15,7 +17,7 @@ router.post('/v1/auth/register', validateRequestBody(createUserSchema), captureE
 
 router.post('/v1/auth/login', validateRequestBody(loginSchema), authController.login);
 
-router.get('/v1/users', verifyJwt, authController.getUsers);
+router.get('/v1/users', verifyJwt, verifyPermission('get_users'), authController.getUsers);
 
 router.patch('/v1/users/:id', verifyJwt, validateRequestBody(changeUserActivationSchema), authController.changeUserActivation);
 

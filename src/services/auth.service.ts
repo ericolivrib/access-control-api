@@ -12,6 +12,7 @@ import jwt from "jsonwebtoken";
 import ms from 'ms'
 import { environment } from "@/schemas/env.schema";
 import { getJwtExpiration } from "@/utils/get-jwt-expiration";
+import { userWithAccesses } from "@/schemas/user-with-accesses";
 
 export interface IAuthService {
   registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema>;
@@ -92,16 +93,14 @@ async function getUsers(page: number, pageSize: number): Promise<IPage<UserWitho
 }
 
 async function getUserById(userId: string): Promise<UserWithoutPasswordSchema> {
-  const user = await User.findByPk(userId, {
-    attributes: { exclude: ['password'] }
-  });
+  const user = await User.findWithAccessesByPk(userId);
 
   if (user === null) {
     logger.info({ userId }, 'Tentativa de busca por usuário inexistente');
     throw new NotFoundError('Usuário não encontrado');
   }
 
-  return userWithoutPasswordSchema.parse(user.dataValues);
+  return userWithAccesses.parse(user.dataValues);
 }
 
 export const authService: IAuthService = {
