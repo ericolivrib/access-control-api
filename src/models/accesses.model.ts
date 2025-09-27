@@ -6,13 +6,10 @@ import Permission from "./permissions.model";
 
 type AccessStatus = 'granted' | 'revoked' | 'expired';
 
-type AccessPermission = 'read' | 'write' | 'admin';
-
 interface AccessAttributes {
   id: UUID;
   userId: UUID;
   permissionId: number;
-  permission: AccessPermission;
   status: AccessStatus;
   expiresAt: Date;
   grantedAt: Date;
@@ -40,10 +37,6 @@ Access.init({
   },
   permissionId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  permission: {
-    type: DataTypes.ENUM('read', 'write', 'admin'),
     allowNull: false,
   },
   expiresAt: {
