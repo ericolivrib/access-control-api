@@ -11,26 +11,68 @@ import e from 'express';
 
 const router = e.Router();
 
-router.post('/v1/auth/register', validateRequestBody(createUserSchema), authController.registerUser);
+router.post(
+  '/v1/auth/register',
+  validateRequestBody(createUserSchema),
+  authController.registerUser
+);
 
-router.post('/v1/auth/login', validateRequestBody(loginSchema), authController.login);
+router.post(
+  '/v1/auth/login',
+  validateRequestBody(loginSchema),
+  authController.login
+);
 
-router.get('/v1/users', verifyJwt, verifyPermission('get_users'), authController.getUsers);
+router.get(
+  '/v1/users',
+  verifyJwt,
+  verifyPermission('get_users'),
+  authController.getUsers);
 
-router.post('/v1/users', verifyJwt, verifyPermission('create_user'), validateRequestBody(createUserSchema), authController.registerUser);
+router.post(
+  '/v1/users',
+  verifyJwt,
+  verifyPermission('create_user'),
+  validateRequestBody(createUserSchema),
+  authController.registerUser);
 
-router.patch('/v1/users/:id', verifyJwt, verifyPermission('change_user_activation'), validateRequestBody(changeUserActivationSchema), authController.changeUserActivation);
+router.patch(
+  '/v1/users/:id',
+  verifyJwt,
+  verifyPermission('change_user_activation'),
+  validateRequestBody(changeUserActivationSchema),
+  authController.changeUserActivation
+);
 
-router.get('/v1/accesses', accessController.getAllAccesses);
+router.get(
+  '/v1/accesses',
+  accessController.getAllAccesses
+);
 
-router.post('/v1/users/:id/accesses', accessController.grantAccess);
+router.post(
+  '/v1/users/:id/accesses',
+  accessController.grantAccess
+);
 
-router.get('/v1/users/:id/accesses', accessController.getUserAccesses);
+router.get(
+  '/v1/users/:id/accesses',
+  accessController.getUserAccesses
+);
 
-router.patch('/v1/accesses/:id', accessController.changeAccessExpirationDate);
+router.patch(
+  '/v1/accesses/:id',
+  accessController.changeAccessExpirationDate
+);
 
-router.delete('/v1/accesses/:id', accessController.revokeAccess);
+router.delete(
+  '/v1/accesses/:id',
+  accessController.revokeAccess
+);
 
-router.get('/v1/permissions', verifyJwt, permissionController.getPermissions);
+router.get(
+  '/v1/permissions',
+  verifyJwt,
+  permissionController.getPermissions
+);
 
 export default router;
