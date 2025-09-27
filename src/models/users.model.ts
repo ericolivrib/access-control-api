@@ -34,6 +34,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
       include: {
         model: Access,
         as: 'accesses',
+        required: false,
         where: {
           status: 'granted'
         },
