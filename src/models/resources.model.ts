@@ -4,7 +4,10 @@ import { DataTypes, Model, Optional } from "sequelize";
 export enum ResourceType {
   REVOKE_ACCESS = 'revoke_access',
   GRANT_ACCESS = 'grant_access',
+  UPDATE_ACCESS_EXPIRATION = 'update_access_expiration',
   CREATE_USER = 'create_user',
+  UPDATE_USER = 'update_user',
+  GET_USERS = 'get_users',
   CHANGE_USER_ACTIVATION = 'change_user_activation'
 }
 

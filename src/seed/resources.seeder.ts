@@ -7,15 +7,27 @@ export async function seedResources() {
   const resources = [
     {
       type: ResourceType.REVOKE_ACCESS,
-      description: 'Revoga os acessos de recursos de usuários'
+      description: 'Permite revogar permissões de usuários'
     },
     {
       type: ResourceType.GRANT_ACCESS,
-      description: 'Concede os acessos de recursos a outros usuários'
+      description: 'Permite conceder permissões a outros usuários'
+    },
+    {
+      type: ResourceType.UPDATE_ACCESS_EXPIRATION,
+      description: 'Atualiza o tempo de expiração de permissões dos usuários'
     },
     {
       type: ResourceType.CREATE_USER,
-      description: 'Pode criar novos usuários'
+      description: 'Permite criar novos usuários'
+    },
+    {
+      type: ResourceType.UPDATE_USER,
+      description: 'Permite atualizar os dados de usuários existentes'
+    },
+    {
+      type: ResourceType.GET_USERS,
+      description: 'Permite recuperar os usuários existentes'
     },
     {
       type: ResourceType.CHANGE_USER_ACTIVATION,
