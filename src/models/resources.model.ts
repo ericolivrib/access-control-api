@@ -1,9 +1,16 @@
 import datasource from "@/datasource";
 import { DataTypes, Model, Optional } from "sequelize";
 
+export enum ResourceType {
+  REVOKE_ACCESS = 'revoke_access',
+  GRANT_ACCESS = 'grant_access',
+  CREATE_USER = 'create_user',
+  CHANGE_USER_ACTIVATION = 'change_user_activation'
+}
+
 interface ResourceAttributes {
   id: number;
-  label: string;
+  type: ResourceType;
   description: string;
 }
 
@@ -17,8 +24,8 @@ Resource.init({
     primaryKey: true,
     autoIncrement: true,
   },
-  label: {
-    type: DataTypes.STRING(20),
+  type: {
+    type: DataTypes.ENUM(...Object.values(ResourceType)),
     allowNull: false,
     unique: true,
   },

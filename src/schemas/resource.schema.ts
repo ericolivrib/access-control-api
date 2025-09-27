@@ -2,7 +2,7 @@ import z from "zod";
 
 export const resourceSchema = z.object({
   id: z.number().int().positive(),
-  label: z.string(),
+  type: z.string(),
   description: z.string(),
 });
 
