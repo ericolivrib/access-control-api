@@ -4,6 +4,7 @@ import { environment } from './schemas/env.schema';
 
 const datasource = new Sequelize(environment.DATABASE_URL, {
   logging: (msg) => logger.debug(msg),
+  sync: { alter: true }
 });
 
 export async function connect() {

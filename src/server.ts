@@ -15,7 +15,7 @@ app.use(e.json());
 app.use(router);
 app.use(handleError);
 
-syncModels();
+// syncModels();
 
 app.listen(PORT, (err) => {
   if (err) {
