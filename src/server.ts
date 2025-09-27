@@ -4,6 +4,7 @@ import handleError from './errors/handleError';
 import logger from './utils/logger';
 import { environment } from './schemas/env.schema';
 import { seedResources } from './seed/resources.seeder';
+import { syncModels } from './models';
 
 const app = e();
 
@@ -14,6 +15,8 @@ app.use(e.json());
 app.use(router);
 app.use(handleError);
 
+syncModels();
+
 app.listen(PORT, (err) => {
   if (err) {
     logger.error(err, 'Erro ao iniciar o servidor');
@@ -21,5 +24,4 @@ app.listen(PORT, (err) => {
   }
 
   logger.info(`Servidor rodando em http://${HOST}:${PORT}`);
-  seedResources();
 });
