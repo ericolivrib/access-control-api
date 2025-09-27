@@ -58,16 +58,6 @@ Access.init({
   tableName: "accesses",
 });
 
-Access.belongsTo(User, {
-  targetKey: 'id',
-  foreignKey: 'userId',
-  as: 'user'
-});
-
-Access.belongsTo(Permission, {
-  targetKey: 'id',
-  foreignKey: 'permissionId',
-  as: 'permission'
-});
+Access.sync()
 
 export default Access;
