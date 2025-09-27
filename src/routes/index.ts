@@ -1,6 +1,6 @@
 import { accessController } from '@/controllers/accesses.controller';
 import { authController } from '@/controllers/auth.controller';
-import { resourceController } from '@/controllers/resources.controller';
+import { permissionController } from '@/controllers/permissions.controller';
 import captureError from '@/middlewares/captureError';
 import validateRequestBody from '@/middlewares/validateRequestBody';
 import verifyJwt from '@/middlewares/verifyJwt';
@@ -29,6 +29,6 @@ router.patch('/v1/accesses/:id', accessController.changeAccessExpirationDate);
 
 router.delete('/v1/accesses/:id', accessController.revokeAccess);
 
-router.get('/v1/resources', verifyJwt, captureError(resourceController.getResources));
+router.get('/v1/permissions', verifyJwt, captureError(permissionController.getPermissions));
 
 export default router;

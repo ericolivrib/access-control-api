@@ -2,7 +2,7 @@ import datasource from "@/datasource";
 import { randomUUID, UUID } from "node:crypto";
 import { DataTypes, Model, Optional } from "sequelize";
 import User from "./users.model";
-import Resource from "./resources.model";
+import Permission from "./permissions.model";
 
 type AccessStatus = 'granted' | 'revoked' | 'expired';
 
@@ -11,7 +11,7 @@ type AccessPermission = 'read' | 'write' | 'admin';
 interface AccessAttributes {
   id: UUID;
   userId: UUID;
-  resourceId: number;
+  permissionId: number;
   permission: AccessPermission;
   status: AccessStatus;
   expiresAt: Date;
@@ -38,7 +38,7 @@ Access.init({
     type: DataTypes.UUID,
     allowNull: false,
   },
-  resourceId: {
+  permissionId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
@@ -66,8 +66,8 @@ Access.init({
 Access.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 User.hasMany(Access, { foreignKey: 'userId', as: 'accesses' });
 
-Access.belongsTo(Resource, { foreignKey: 'resourceId', as: 'resource' });
-Resource.hasMany(Access, { foreignKey: 'resourceId', as: 'accesses' });
+Access.belongsTo(Permission, { foreignKey: 'permissionId', as: 'permission' });
+Permission.hasMany(Access, { foreignKey: 'permissionId', as: 'accesses' });
 
 Access.sync();
 

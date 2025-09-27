@@ -1,7 +1,7 @@
 import datasource from "@/datasource";
 import { DataTypes, Model, Optional } from "sequelize";
 
-export enum ResourceType {
+export enum PermissionType {
   REVOKE_ACCESS = 'revoke_access',
   GRANT_ACCESS = 'grant_access',
   UPDATE_ACCESS_EXPIRATION = 'update_access_expiration',
@@ -11,24 +11,24 @@ export enum ResourceType {
   CHANGE_USER_ACTIVATION = 'change_user_activation'
 }
 
-interface ResourceAttributes {
+interface PermissionAttributes {
   id: number;
-  type: ResourceType;
+  type: PermissionType;
   description: string;
 }
 
-type ResourceCreationAttributes = Optional<ResourceAttributes, 'id'>;
+type PermissionCreationAttributes = Optional<PermissionAttributes, 'id'>;
 
-export class Resource extends Model<ResourceAttributes, ResourceCreationAttributes> { }
+export class Permission extends Model<PermissionAttributes, PermissionCreationAttributes> { }
 
-Resource.init({
+Permission.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
   type: {
-    type: DataTypes.ENUM(...Object.values(ResourceType)),
+    type: DataTypes.ENUM(...Object.values(PermissionType)),
     allowNull: false,
     unique: true,
   },
@@ -38,9 +38,9 @@ Resource.init({
   }
 }, {
   sequelize: datasource,
-  tableName: "resources",
+  tableName: "permissions",
 });
 
-Resource.sync();
+Permission.sync();
 
-export default Resource;
+export default Permission;

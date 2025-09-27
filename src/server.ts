@@ -3,8 +3,6 @@ import router from './routes';
 import handleError from './errors/handleError';
 import logger from './utils/logger';
 import { environment } from './schemas/env.schema';
-import { seedResources } from './seed/resources.seeder';
-import { syncModels } from './models';
 
 const app = e();
 
