@@ -1,15 +1,9 @@
 import datasource from "@/datasource";
 import { DataTypes, Model, Optional } from "sequelize";
 
-export enum PermissionType {
-  REVOKE_ACCESS = 'revoke_access',
-  GRANT_ACCESS = 'grant_access',
-  UPDATE_ACCESS_EXPIRATION = 'update_access_expiration',
-  CREATE_USER = 'create_user',
-  UPDATE_USER = 'update_user',
-  GET_USERS = 'get_users',
-  CHANGE_USER_ACTIVATION = 'change_user_activation'
-}
+export const PERMISSION_TYPES = ['revoke_access', 'grant_access', 'update_access_expiration', 'create_user', 'update_user', 'get_users', 'change_user_activation'] as const;
+
+export type PermissionType = typeof PERMISSION_TYPES[number];
 
 interface PermissionAttributes {
   id: number;
@@ -28,7 +22,7 @@ Permission.init({
     autoIncrement: true,
   },
   type: {
-    type: DataTypes.ENUM(...Object.values(PermissionType)),
+    type: DataTypes.ENUM(...PERMISSION_TYPES),
     allowNull: false,
     unique: true,
   },

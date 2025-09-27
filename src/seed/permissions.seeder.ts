@@ -6,31 +6,31 @@ export async function seedPermission() {
 
   const permissions = [
     {
-      type: PermissionType.REVOKE_ACCESS,
+      type: 'revoke_access' as PermissionType,
       description: 'Permite revogar permissões de usuários'
     },
     {
-      type: PermissionType.GRANT_ACCESS,
+      type: 'grant_access' as PermissionType,
       description: 'Permite conceder permissões a outros usuários'
     },
     {
-      type: PermissionType.UPDATE_ACCESS_EXPIRATION,
+      type: 'update_access_expiration' as PermissionType,
       description: 'Atualiza o tempo de expiração de permissões dos usuários'
     },
     {
-      type: PermissionType.CREATE_USER,
+      type: 'create_user' as PermissionType,
       description: 'Permite criar novos usuários'
     },
     {
-      type: PermissionType.UPDATE_USER,
+      type: 'update_user' as PermissionType,
       description: 'Permite atualizar os dados de usuários existentes'
     },
     {
-      type: PermissionType.GET_USERS,
+      type: 'get_users' as PermissionType,
       description: 'Permite recuperar os usuários existentes'
     },
     {
-      type: PermissionType.CHANGE_USER_ACTIVATION,
+      type: 'change_user_activation' as PermissionType,
       description: 'Pode ativar/desativar usuários existentes'
     },
   ];
