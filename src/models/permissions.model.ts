@@ -15,7 +15,14 @@ interface PermissionAttributes {
 
 type PermissionCreationAttributes = Optional<PermissionAttributes, 'id' | 'accesses'>;
 
-export class Permission extends Model<PermissionAttributes, PermissionCreationAttributes> { }
+export class Permission extends Model<PermissionAttributes, PermissionCreationAttributes> {
+  static findByType(type: PermissionType): Promise<Permission | null> {
+    return Permission.findOne({
+      attributes: ['id', 'type', 'description'],
+      where: { type }
+    });
+  }
+}
 
 Permission.init({
   id: {

@@ -1,3 +1,7 @@
+import { AccessSchema } from "@/schemas/access.schema";
+import { ApiResponseSchema } from "@/schemas/api-response.schema";
+import { GrantAccessSchema } from "@/schemas/grant-access.schema";
+import { accessService } from "@/services/access.service";
 import { Request, Response } from "express";
 
 interface IAccessController {
@@ -8,7 +12,21 @@ interface IAccessController {
   revokeAccess(req: Request, res: Response): Promise<void>;
 }
 
-async function grantAccess(req: Request, res: Response) { }
+async function grantAccess(req: Request, res: Response) {
+  const requestBody: GrantAccessSchema = req.body;
+  const { userId } = req.params
+
+  const grantedAccess = await accessService.grantAccess(userId, requestBody);
+
+  const responseBody: ApiResponseSchema = {
+    message: 'Acesso concedido com sucesso',
+    data: grantedAccess
+  }
+
+  res.status(201)
+    .location(`/v1/accesses/${grantedAccess.id}`)
+    .json(responseBody);
+}
 
 async function getUserAccesses(req: Request, res: Response) { }
 

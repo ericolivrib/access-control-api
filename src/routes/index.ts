@@ -6,6 +6,7 @@ import verifyJwt from '@/middlewares/verifyJwt';
 import verifyPermission from '@/middlewares/verifyPermissions';
 import { changeUserActivationSchema } from '@/schemas/change-user-activation.schema';
 import { createUserSchema } from '@/schemas/create-user.schema';
+import { grantAccessSchema } from '@/schemas/grant-access.schema';
 import { loginSchema } from '@/schemas/login.schema';
 import e from 'express';
 
@@ -50,7 +51,10 @@ router.get(
 );
 
 router.post(
-  '/v1/users/:id/accesses',
+  '/v1/users/:userId/accesses',
+  verifyJwt,
+  verifyPermission('grant_access'),
+  validateRequestBody(grantAccessSchema),
   accessController.grantAccess
 );
 

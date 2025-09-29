@@ -8,8 +8,6 @@ export const ACCESS_STATUSES = ['granted', 'revoked', 'expired'] as const;
 
 export type AccessStatus = typeof ACCESS_STATUSES[number];
 
-type AccessStatus = 'granted' | 'revoked' | 'expired';
-
 interface AccessAttributes {
   id: UUID;
   userId: UUID;
@@ -24,7 +22,23 @@ interface AccessAttributes {
 
 type AccessCreationAttributes = Optional<AccessAttributes, 'id' | 'status' | 'revokedAt' | 'user' | 'permission'>;
 
-class Access extends Model<AccessAttributes, AccessCreationAttributes> { }
+class Access extends Model<AccessAttributes, AccessCreationAttributes> {
+
+  static async countGrantedByPermissionTypeAndUserId(userId: UUID, type: PermissionType): Promise<number> {
+    return Access.count({
+      attributes: { exclude: ['revokedAt'] },
+      where: {
+        userId,
+        status: 'granted',
+      },
+      include: {
+        model: Permission,
+        as: 'permission',
+        where: { type }
+      }
+    });
+  }
+}
 
 Access.init({
   id: {
