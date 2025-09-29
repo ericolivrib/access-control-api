@@ -3,6 +3,7 @@ import router from './routes';
 import handleError from './errors/handleError';
 import logger from './utils/logger';
 import { environment } from './schemas/env.schema';
+import { createModelAssociations } from './models/associations';
 
 const app = e();
 
@@ -20,6 +21,8 @@ app.listen(PORT, (err) => {
     logger.error(err, 'Erro ao iniciar o servidor');
     process.exit(1);
   }
+
+  createModelAssociations();
 
   logger.info(`Servidor rodando em http://${HOST}:${PORT}`);
 });

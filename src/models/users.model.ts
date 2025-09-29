@@ -112,18 +112,6 @@ User.init({
   tableName: "users",
 });
 
-Access.belongsTo(User, {
-  targetKey: 'id',
-  foreignKey: 'userId',
-  as: 'user',
-});
-
-User.hasMany(Access, {
-  sourceKey: 'id',
-  foreignKey: 'userId',
-  as: 'accesses'
-});
-
 User.sync();
 
 export default User;

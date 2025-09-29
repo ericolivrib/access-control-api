@@ -2,7 +2,11 @@ import datasource from "@/datasource";
 import { randomUUID, UUID } from "node:crypto";
 import { DataTypes, Model, Optional } from "sequelize";
 import User from "./users.model";
-import Permission from "./permissions.model";
+import Permission, { PermissionType } from "./permissions.model";
+
+export const ACCESS_STATUSES = ['granted', 'revoked', 'expired'] as const;
+
+export type AccessStatus = typeof ACCESS_STATUSES[number];
 
 type AccessStatus = 'granted' | 'revoked' | 'expired';
 
@@ -58,6 +62,6 @@ Access.init({
   tableName: "accesses",
 });
 
-Access.sync()
+Access.sync();
 
 export default Access;

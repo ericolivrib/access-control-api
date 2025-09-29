@@ -37,18 +37,6 @@ Permission.init({
   tableName: "permissions",
 });
 
-Access.belongsTo(Permission, {
-  targetKey: 'id',
-  foreignKey: 'permissionId',
-  as: 'permission'
-});
-
-Permission.hasMany(Access, {
-  sourceKey: 'id',
-  foreignKey: 'permissionId',
-  as: 'accesses'
-});
-
 Permission.sync();
 
 export default Permission;
