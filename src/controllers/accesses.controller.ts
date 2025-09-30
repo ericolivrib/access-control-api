@@ -34,7 +34,18 @@ async function getAllAccesses(req: Request, res: Response) { }
 
 async function changeAccessExpirationDate(req: Request, res: Response) { }
 
-async function revokeAccess(req: Request, res: Response) { }
+async function revokeAccess(req: Request, res: Response) {
+  const { id: accessId } = req.params;
+
+  const revokedAccess = await accessService.revokeAccess(accessId);
+
+  const responseBody: ApiResponseSchema = {
+    message: 'Accesso revogado com sucesso',
+    data: revokedAccess
+  }
+
+  res.status(200).json(responseBody);
+}
 
 export const accessController: IAccessController = {
   grantAccess,

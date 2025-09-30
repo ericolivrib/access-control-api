@@ -5,11 +5,13 @@ import Permission from "@/models/permissions.model";
 import User from "@/models/users.model";
 import { accessSchema, AccessSchema } from "@/schemas/access.schema";
 import { GrantAccessSchema } from "@/schemas/grant-access.schema";
+import { revokedAccessSchema, RevokedAccessSchema } from "@/schemas/revoked-access.schema";
 import logger from "@/utils/logger";
 import { UUID } from "node:crypto";
 
 interface IAccessService {
   grantAccess(userId: string, access: GrantAccessSchema): Promise<AccessSchema>;
+  revokeAccess(accessId: string): Promise<RevokedAccessSchema>;
 }
 
 async function grantAccess(userId: UUID, access: GrantAccessSchema): Promise<AccessSchema> {
@@ -47,7 +49,39 @@ async function grantAccess(userId: UUID, access: GrantAccessSchema): Promise<Acc
   });
 }
 
+async function revokeAccess(accessId: string): Promise<RevokedAccessSchema> {
+  const access = await Access.findByPk(accessId, {
+    attributes: ['id', 'userId', 'permissionId', 'status', 'grantedAt']
+  });
+
+  if (access === null) {
+    logger.info({ accessId }, 'Tentativa de revogação de acesso não encontrado');
+    throw new NotFoundError('Acesso não encontrado para revogação');
+  }
+
+  const currentStatus = access.getDataValue('status');
+
+  if (currentStatus !== 'granted') {
+    logger.info({ accessId }, 'Tentativa de revogação de acesso expirado ou préviamente revogado');
+    throw new ConflictError('Não é possível revogar um acesso já expirado ou revogado');
+  }
+
+  await access.update({
+    status: 'revoked',
+    revokedAt: new Date()
+  });
+
+  const permission = await Permission.findByPk(access.getDataValue('permissionId'), {
+    attributes: ['type']
+  })
+
+  return revokedAccessSchema.parse({
+    ...access.dataValues,
+    permissionType: permission?.getDataValue('type')
+  });
+}
 
 export const accessService: IAccessService = {
-  grantAccess
+  grantAccess,
+  revokeAccess
 }

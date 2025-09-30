@@ -70,6 +70,8 @@ router.patch(
 
 router.delete(
   '/v1/accesses/:id',
+  verifyJwt,
+  verifyPermission('revoke_access'),
   accessController.revokeAccess
 );
 
