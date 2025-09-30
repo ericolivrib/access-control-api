@@ -36,6 +36,11 @@ docker run -p 3000:3000 -d access-control-api:latest
 http://localhost:3000
 ```
 
+
+
+<h2>📃 Documentação</h2>
+
+A documentação dos endpoints está em desenvolvimento e em breve estará disponível
   
   
 <h2>💻 Tecnologias</h2>
