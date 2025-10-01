@@ -48,7 +48,7 @@ async function grantAccess(userId: UUID, access: GrantAccessSchema): Promise<Gra
 
   return grantedAccessSchema.parse({
     ...newAccess.dataValues,
-    permissionType: access.permissionType
+    permission: { type: access.permissionType }
   });
 }
 
@@ -80,7 +80,7 @@ async function revokeAccess(accessId: string): Promise<RevokedAccessSchema> {
 
   return revokedAccessSchema.parse({
     ...access.dataValues,
-    permissionType: permission?.getDataValue('type')
+    permission: permission?.dataValues
   });
 }
 
