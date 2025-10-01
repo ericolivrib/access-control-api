@@ -26,7 +26,6 @@ class Access extends Model<AccessAttributes, AccessCreationAttributes> {
 
   static async countGrantedByPermissionTypeAndUserId(userId: UUID, type: PermissionType): Promise<number> {
     return Access.count({
-      attributes: { exclude: ['revokedAt'] },
       where: {
         userId,
         status: 'granted',
