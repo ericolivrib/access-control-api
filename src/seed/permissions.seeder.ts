@@ -33,6 +33,10 @@ export async function seedPermission() {
       type: 'change_user_activation' as PermissionType,
       description: 'Pode ativar/desativar usuários existentes'
     },
+    {
+      type: 'get_user_accesses' as PermissionType,
+      description: 'Pode visualizar todos os acessos de um determinado usuário'
+    },
   ];
 
   for (const res of permissions) {
