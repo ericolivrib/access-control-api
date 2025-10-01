@@ -8,7 +8,8 @@ export const accessSchema = z.object({
   permissionType: z.enum(PERMISSION_TYPES),
   status: z.enum(ACCESS_STATUSES),
   expiresAt: z.date(),
-  grantedAt: z.date()
+  grantedAt: z.date(),
+  revokedAt: z.date()
 });
 
 export type AccessSchema = z.infer<typeof accessSchema>;

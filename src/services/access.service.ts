@@ -5,16 +5,17 @@ import Permission from "@/models/permissions.model";
 import User from "@/models/users.model";
 import { accessSchema, AccessSchema } from "@/schemas/access.schema";
 import { GrantAccessSchema } from "@/schemas/grant-access.schema";
+import { grantedAccessSchema, GrantedAccessSchema } from "@/schemas/granted-access.schema";
 import { revokedAccessSchema, RevokedAccessSchema } from "@/schemas/revoked-access.schema";
 import logger from "@/utils/logger";
 import { UUID } from "node:crypto";
 
 interface IAccessService {
-  grantAccess(userId: string, access: GrantAccessSchema): Promise<AccessSchema>;
+  grantAccess(userId: string, access: GrantAccessSchema): Promise<GrantedAccessSchema>;
   revokeAccess(accessId: string): Promise<RevokedAccessSchema>;
 }
 
-async function grantAccess(userId: UUID, access: GrantAccessSchema): Promise<AccessSchema> {
+async function grantAccess(userId: UUID, access: GrantAccessSchema): Promise<GrantedAccessSchema> {
   const user = await User.findByPk(userId);
 
   if (user === null) {
@@ -43,7 +44,7 @@ async function grantAccess(userId: UUID, access: GrantAccessSchema): Promise<Acc
     expiresAt: access.expiresAt,
   });
 
-  return accessSchema.parse({
+  return grantedAccessSchema.parse({
     ...newAccess.dataValues,
     permissionType: access.permissionType
   });
