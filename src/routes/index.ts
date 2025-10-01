@@ -59,7 +59,9 @@ router.post(
 );
 
 router.get(
-  '/v1/users/:id/accesses',
+  '/v1/users/:userId/accesses',
+  verifyJwt,
+  verifyPermission('get_user_accesses'), // TODO: Criar permissão get_user_accesses
   accessController.getUserAccesses
 );
 

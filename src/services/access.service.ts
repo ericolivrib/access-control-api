@@ -8,11 +8,13 @@ import { GrantAccessSchema } from "@/schemas/grant-access.schema";
 import { grantedAccessSchema, GrantedAccessSchema } from "@/schemas/granted-access.schema";
 import { revokedAccessSchema, RevokedAccessSchema } from "@/schemas/revoked-access.schema";
 import logger from "@/utils/logger";
+import { IPage, paginate } from "@/utils/pagination";
 import { UUID } from "node:crypto";
 
 interface IAccessService {
   grantAccess(userId: string, access: GrantAccessSchema): Promise<GrantedAccessSchema>;
   revokeAccess(accessId: string): Promise<RevokedAccessSchema>;
+  getUserAccesses(userId: string, page: number, pageSize: number): Promise<IPage<AccessSchema>>;
 }
 
 async function grantAccess(userId: UUID, access: GrantAccessSchema): Promise<GrantedAccessSchema> {
@@ -33,7 +35,7 @@ async function grantAccess(userId: UUID, access: GrantAccessSchema): Promise<Gra
   const permission = await Permission.findByType(access.permissionType);
 
   if (permission === null) {
-    logger.info({ userId, permissionType: access.permissionType  }, 'Tentativa de concessão de acesso com tipo de permissão inválido');
+    logger.info({ userId, permissionType: access.permissionType }, 'Tentativa de concessão de acesso com tipo de permissão inválido');
     throw new NotFoundError('Permissão não encontrada');
   }
 
@@ -82,7 +84,37 @@ async function revokeAccess(accessId: string): Promise<RevokedAccessSchema> {
   });
 }
 
+async function getUserAccesses(userId: string, page: number, pageSize: number): Promise<IPage<AccessSchema>> {
+  const userCount = await User.count({
+    where: {
+      id: userId
+    }
+  });
+
+  if (userCount == 0) {
+    logger.info({ userId }, 'Tentativa de busca de acessos de um usuário não encontrado');
+    throw new NotFoundError('Usuário não encontrado para a recuperação de acessos');
+  }
+
+  const offset = (page - 1) * pageSize;
+
+  const { count, rows } = await Access.findAndCountAll({
+    where: { userId },
+    limit: pageSize,
+    offset,
+    order: [['grantedAt', 'ASC']],
+    include: [{
+      model: Permission,
+      as: 'permission'
+    }]
+  });
+
+  const accesses = accessSchema.array().parse(rows);
+  return paginate(accesses, page, pageSize, count);
+}
+
 export const accessService: IAccessService = {
   grantAccess,
-  revokeAccess
+  revokeAccess,
+  getUserAccesses
 }
