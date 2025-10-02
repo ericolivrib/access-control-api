@@ -5,6 +5,7 @@ import logger from './utils/logger';
 import { environment } from './schemas/env.schema';
 import { createModelAssociations } from './models/associations';
 import { accessService } from './services/access.service';
+import { setupSwagger } from './swagger';
 
 const app = e();
 
@@ -14,6 +15,8 @@ const HOST = environment.SERVER_HOST;
 app.use(e.json());
 app.use(router);
 app.use(handleError);
+
+setupSwagger(app);
 
 app.listen(PORT, (err) => {
   if (err) {

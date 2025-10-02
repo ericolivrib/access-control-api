@@ -1,0 +1,14 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Controle de Acessos",
+    "version": "1.0.0",
+    "description": "Documentação da API de Controle de Acessos"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor de desenvolvimento"
+    }
+  ]
+}
