@@ -9,6 +9,7 @@ import { grantedAccessSchema, GrantedAccessSchema } from "@/schemas/granted-acce
 import { revokedAccessSchema, RevokedAccessSchema } from "@/schemas/revoked-access.schema";
 import logger from "@/utils/logger";
 import { IPage, paginate } from "@/utils/pagination";
+import { JobCallback, scheduleJob } from "node-schedule";
 import { UUID } from "node:crypto";
 
 interface IAccessService {
@@ -46,9 +47,41 @@ async function grantAccess(userId: UUID, access: GrantAccessSchema): Promise<Gra
     expiresAt: access.expiresAt,
   });
 
+  scheduleAccessExpiration(newAccess.getDataValue('id'), access.expiresAt);  
+
   return grantedAccessSchema.parse({
     ...newAccess.dataValues,
     permission: { type: access.permissionType }
+  });
+}
+
+async function scheduleAccessExpiration(accessId: string, expiresAt: Date) {
+  logger.info({ accessId, expiresAt }, 'Agendando expiração do acesso para a data especificada');
+
+  scheduleJob(expiresAt, async () => {
+    const access = await Access.findByPk(accessId, {
+      attributes: ['id', 'userId', 'status']
+    });
+
+    if (access === null) {
+      logger.warn({ accessId }, 'Tentativa de expiração de acesso não encontrado');
+      return
+    }
+
+    const currentStatus = access.getDataValue('status');
+
+    if (currentStatus !== 'granted') {
+      return
+    }
+
+    await access.update(
+      {
+        status: 'expired',
+        expiresAt: new Date()
+      }
+    );
+
+    logger.info({ accessId, userId: access.getDataValue('userId') }, 'Acesso expirado para o usuário');
   });
 }
 
