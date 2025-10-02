@@ -11,11 +11,13 @@ import logger from "@/utils/logger";
 import { IPage, paginate } from "@/utils/pagination";
 import { JobCallback, scheduleJob } from "node-schedule";
 import { UUID } from "node:crypto";
+import { Op } from "sequelize";
 
 interface IAccessService {
   grantAccess(userId: string, access: GrantAccessSchema): Promise<GrantedAccessSchema>;
   revokeAccess(accessId: string): Promise<RevokedAccessSchema>;
   getUserAccesses(userId: string, page: number, pageSize: number): Promise<IPage<AccessSchema>>;
+  restoreAccessExpirations(): Promise<void>;
 }
 
 async function grantAccess(userId: UUID, access: GrantAccessSchema): Promise<GrantedAccessSchema> {
@@ -85,6 +87,25 @@ async function scheduleAccessExpiration(accessId: string, expiresAt: Date) {
   });
 }
 
+async function restoreAccessExpirations() {
+  logger.info('Reagendando expiração de acessos');
+  const pendingAccesses = await Access.findAll({
+    where: {
+      status: 'granted',
+      expiresAt: {
+        [Op.gt]: new Date()
+      }
+    }
+  });
+
+  for (const access of pendingAccesses) {
+    const expiresAt = access.getDataValue('expiresAt');
+    const accessId = access.getDataValue('id');
+
+    await scheduleAccessExpiration(accessId, expiresAt);
+  }
+}
+
 async function revokeAccess(accessId: string): Promise<RevokedAccessSchema> {
   const access = await Access.findByPk(accessId, {
     attributes: ['id', 'userId', 'permissionId', 'status', 'grantedAt']
@@ -149,5 +170,6 @@ async function getUserAccesses(userId: string, page: number, pageSize: number): 
 export const accessService: IAccessService = {
   grantAccess,
   revokeAccess,
-  getUserAccesses
+  getUserAccesses,
+  restoreAccessExpirations
 }
