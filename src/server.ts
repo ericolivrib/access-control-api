@@ -15,8 +15,6 @@ app.use(e.json());
 app.use(router);
 app.use(handleError);
 
-// syncModels();
-
 app.listen(PORT, (err) => {
   if (err) {
     logger.error(err, 'Erro ao iniciar o servidor');
