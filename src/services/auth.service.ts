@@ -19,7 +19,7 @@ export interface IAuthService {
   login(email: string, password: string): Promise<AccessTokenSchema>;
   changeUserActivation(userId: string, isActive: boolean): Promise<UserWithoutPasswordSchema>;
   getUsers(page: number, pageSize: number): Promise<IPage<UserWithoutPasswordSchema>>;
-  getUserById(userId: string): Promise<UserWithoutPasswordSchema>;
+  getUserById(userId: string): Promise<UserWithAccesses>;
 }
 
 async function registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema> {
@@ -92,7 +92,7 @@ async function getUsers(page: number, pageSize: number): Promise<IPage<UserWitho
   return paginate(parsedUsers, page, pageSize, count);
 }
 
-async function getUserById(userId: string): Promise<UserWithoutPasswordSchema> {
+async function getUserById(userId: string): Promise<UserWithAccesses> {
   const user = await User.findWithAccessesByPk(userId);
 
   if (user === null) {
