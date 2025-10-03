@@ -12,7 +12,8 @@ import jwt from "jsonwebtoken";
 import ms from 'ms'
 import { environment } from "@/schemas/env.schema";
 import { getJwtExpiration } from "@/utils/get-jwt-expiration";
-import { userWithAccesses } from "@/schemas/user-with-accesses";
+import { UserWithAccesses, userWithAccesses } from "@/schemas/user-with-accesses";
+import { LockedError } from "@/errors/LockedError";
 
 export interface IAuthService {
   registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema>;
@@ -47,6 +48,13 @@ async function login(email: string, password: string): Promise<AccessTokenSchema
   if (invalidPassword) {
     logger.info({ email }, 'Tentativa de login com senha inválida');
     throw new UnauthorizedError('Credenciais inválidas');
+  }
+
+  const isActive = user.getDataValue('active');
+
+  if (!isActive) {
+    logger.info('Tentativa de login de um usuário inativo');
+    throw new LockedError('Conta inativa');
   }
 
   logger.info({ email }, 'Gerando token de acesso para o usuário');

@@ -1,5 +1,7 @@
+import { LockedError } from "@/errors/LockedError";
 import { UnauthorizedError } from "@/errors/UnauthorizedError";
 import { environment } from "@/schemas/env.schema";
+import { UserWithAccesses } from "@/schemas/user-with-accesses";
 import { authService } from "@/services/auth.service";
 import logger from "@/utils/logger";
 import { NextFunction, Request, Response } from "express";
@@ -43,13 +45,20 @@ export default async function verifyJwt(req: Request, res: Response, next: NextF
     userId = (<jwt.JwtPayload>payload).sub;
   });
 
+  let user: UserWithAccesses
+
   try {
-    const user = await authService.getUserById(userId!);
-    req['user'] = user;
+    user = await authService.getUserById(userId!);
   } catch (error) {
     logger.info({ userId }, "Usuário não encontrado para o token de acesso fornecido");
     throw new UnauthorizedError("Não autorizado");
   }
 
+  if (!user.active) {
+    logger.info({ userId }, 'Tentativa de acesso com conta inativa');
+    throw new LockedError('É necessário estar com a conta ativa para acessar os recursos do sistema');
+  }
+
+  req['user'] = user;
   next();
 }
