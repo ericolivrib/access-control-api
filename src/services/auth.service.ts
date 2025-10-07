@@ -1,7 +1,7 @@
 import { ConflictError } from "@/errors/ConflictError";
 import { NotFoundError } from "@/errors/NotFoundError";
 import { UnauthorizedError } from "@/errors/UnauthorizedError";
-import { UserModel } from "@/models/users.model";
+import { UserModel } from "@/models/user.model";
 import { accessTokenSchema, AccessTokenSchema } from "@/schemas/access-token.schema";
 import { CreateUserSchema } from "@/schemas/create-user.schema";
 import { userWithoutPasswordSchema, UserWithoutPasswordSchema } from "@/schemas/user-without-password.schema";

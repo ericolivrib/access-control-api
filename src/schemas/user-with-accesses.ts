@@ -1,4 +1,4 @@
-import { PERMISSION_TYPES, PermissionType } from "@/models/permissions.model";
+import { PERMISSION_TYPES, PermissionType } from "@/models/permission.model";
 import z from "zod";
 
 export const userWithAccesses = z.object({

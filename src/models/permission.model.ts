@@ -1,6 +1,6 @@
 import datasource from "@/datasource";
 import { DataTypes, Model, Optional } from "sequelize";
-import AccessModel from "./accesses.model";
+import AccessModel from "./access.model";
 
 export const PERMISSION_TYPES = ['revoke_access', 'grant_access', 'update_access_expiration', 'create_user', 'update_user', 'get_users', 'change_user_activation', 'get_user_accesses'] as const;
 

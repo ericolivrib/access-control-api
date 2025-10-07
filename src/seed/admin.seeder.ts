@@ -1,4 +1,4 @@
-import UserModel from "../models/users.model";
+import UserModel from "../models/user.model";
 import logger from "@/utils/logger";
 import { environment } from "@/schemas/env.schema";
 

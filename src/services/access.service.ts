@@ -1,8 +1,8 @@
 import { ConflictError } from "@/errors/ConflictError";
 import { NotFoundError } from "@/errors/NotFoundError";
-import { AccessModel } from "@/models/accesses.model";
-import { PermissionModel } from "@/models/permissions.model";
-import { UserModel } from "@/models/users.model";
+import { AccessModel } from "@/models/access.model";
+import { PermissionModel } from "@/models/permission.model";
+import { UserModel } from "@/models/user.model";
 import { accessSchema, AccessSchema } from "@/schemas/access.schema";
 import { GrantAccessSchema } from "@/schemas/grant-access.schema";
 import { grantedAccessSchema, GrantedAccessSchema } from "@/schemas/granted-access.schema";

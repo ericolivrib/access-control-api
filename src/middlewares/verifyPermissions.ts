@@ -1,5 +1,5 @@
 import { ForbiddenError } from "@/errors/ForbiddenError";
-import { PermissionType } from "@/models/permissions.model";
+import { PermissionType } from "@/models/permission.model";
 import { UserWithAccesses } from "@/schemas/user-with-accesses";
 import logger from "@/utils/logger";
 import { NextFunction, Request, Response } from "express";

@@ -1,6 +1,6 @@
-import { accessController } from '@/controllers/accesses.controller';
+import { accessController } from '@/controllers/access.controller';
 import { authController } from '@/controllers/auth.controller';
-import { permissionController } from '@/controllers/permissions.controller';
+import { permissionController } from '@/controllers/permission.controller';
 import validateRequestBody from '@/middlewares/validateRequestBody';
 import verifyJwt from '@/middlewares/verifyJwt';
 import verifyPermission from '@/middlewares/verifyPermissions';

@@ -1,4 +1,4 @@
-import PermissionModel, { PermissionType } from "@/models/permissions.model";
+import PermissionModel, { PermissionType } from "@/models/permission.model";
 import logger from "@/utils/logger";
 
 export async function seedPermission() {

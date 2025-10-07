@@ -6,8 +6,8 @@ import jwt from 'jsonwebtoken';
 import ms from "ms";
 import { environment } from "@/schemas/env.schema";
 import { hashPassword } from "@/utils/hash-password";
-import { AccessModel } from "./accesses.model";
-import { PermissionModel } from "./permissions.model";
+import { AccessModel } from "./access.model";
+import { PermissionModel } from "./permission.model";
 
 export type UserRole = 'admin' | 'user';
 

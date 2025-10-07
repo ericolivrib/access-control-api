@@ -1,8 +1,8 @@
 import datasource from "@/datasource";
 import { randomUUID, UUID } from "node:crypto";
 import { DataTypes, Model, Optional } from "sequelize";
-import { UserModel } from "./users.model";
-import { PermissionModel, PermissionType } from "./permissions.model";
+import { UserModel } from "./user.model";
+import { PermissionModel, PermissionType } from "./permission.model";
 
 export const ACCESS_STATUSES = ['granted', 'revoked', 'expired'] as const;
 

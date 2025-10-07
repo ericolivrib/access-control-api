@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { permissionsService } from "@/services/permissions.service";
+import { permissionsService } from "@/services/permission.service";
 
 interface IPermissionController {
   getPermissions(req: Request, res: Response): Promise<void>;

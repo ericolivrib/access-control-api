@@ -1,5 +1,5 @@
-import { ACCESS_STATUSES } from "@/models/accesses.model";
-import { PERMISSION_TYPES } from "@/models/permissions.model";
+import { ACCESS_STATUSES } from "@/models/access.model";
+import { PERMISSION_TYPES } from "@/models/permission.model";
 import z from "zod";
 import { accessSchema } from "./access.schema";
 

@@ -1,4 +1,4 @@
-import { PERMISSION_TYPES } from "@/models/permissions.model";
+import { PERMISSION_TYPES } from "@/models/permission.model";
 import z from "zod";
 
 export const grantAccessSchema = z.object({

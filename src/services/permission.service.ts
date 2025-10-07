@@ -1,5 +1,5 @@
 import { InternalServerError } from "@/errors/InternalServerError";
-import { PermissionModel } from "@/models/permissions.model";
+import { PermissionModel } from "@/models/permission.model";
 import { permissionSchema, PermissionSchema } from "@/schemas/permission.schema";
 import logger from "@/utils/logger";
 
