@@ -1,8 +1,8 @@
 import { ConflictError } from "@/errors/ConflictError";
 import { NotFoundError } from "@/errors/NotFoundError";
-import AccessModel from "@/models/accesses.model";
-import PermissionModel from "@/models/permissions.model";
-import UserModel from "@/models/users.model";
+import { AccessModel } from "@/models/accesses.model";
+import { PermissionModel } from "@/models/permissions.model";
+import { UserModel } from "@/models/users.model";
 import { accessSchema, AccessSchema } from "@/schemas/access.schema";
 import { GrantAccessSchema } from "@/schemas/grant-access.schema";
 import { grantedAccessSchema, GrantedAccessSchema } from "@/schemas/granted-access.schema";
@@ -49,7 +49,7 @@ async function grantAccess(userId: UUID, access: GrantAccessSchema): Promise<Gra
     expiresAt: access.expiresAt,
   });
 
-  scheduleAccessExpiration(newAccess.getDataValue('id'), access.expiresAt);  
+  scheduleAccessExpiration(newAccess.getDataValue('id'), access.expiresAt);
 
   return grantedAccessSchema.parse({
     ...newAccess.dataValues,

@@ -1,6 +1,6 @@
-import AccessModel from "./accesses.model";
-import PermissionModel from "./permissions.model";
-import UserModel from "./users.model";
+import { AccessModel } from "./accesses.model";
+import { PermissionModel } from "./permissions.model";
+import { UserModel } from "./users.model";
 
 export function createModelAssociations() {
   AccessModel.belongsTo(PermissionModel, {
