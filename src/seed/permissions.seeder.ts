@@ -1,4 +1,4 @@
-import Permission, { PermissionType } from "@/models/permissions.model";
+import PermissionModel, { PermissionType } from "@/models/permissions.model";
 import logger from "@/utils/logger";
 
 export async function seedPermission() {
@@ -40,7 +40,7 @@ export async function seedPermission() {
   ];
 
   for (const res of permissions) {
-    await Permission.findOrCreate({
+    await PermissionModel.findOrCreate({
       where: { type: res.type },
       defaults: res,
     });

@@ -1,7 +1,7 @@
 import { ConflictError } from "@/errors/ConflictError";
 import { NotFoundError } from "@/errors/NotFoundError";
 import { UnauthorizedError } from "@/errors/UnauthorizedError";
-import User from "@/models/users.model";
+import UserModel from "@/models/users.model";
 import { accessTokenSchema, AccessTokenSchema } from "@/schemas/access-token.schema";
 import { CreateUserSchema } from "@/schemas/create-user.schema";
 import { userWithoutPasswordSchema, UserWithoutPasswordSchema } from "@/schemas/user-without-password.schema";
@@ -24,19 +24,19 @@ export interface IAuthService {
 }
 
 async function registerUser(user: CreateUserSchema): Promise<UserWithoutPasswordSchema> {
-  const userCount = await User.count({ where: { email: user.email } });
+  const userCount = await UserModel.count({ where: { email: user.email } });
 
   if (userCount > 0) {
     logger.info({ email: user.email }, 'Tentativa de cadastro com e-mail já existente');
     throw new ConflictError('O e-mail informado já está em uso');
   }
 
-  const createdUser = await User.create(user);
+  const createdUser = await UserModel.create(user);
   return userWithoutPasswordSchema.parse(createdUser.dataValues);
 }
 
 async function login(email: string, password: string): Promise<AccessTokenSchema> {
-  const user = await User.findByEmail(email);
+  const user = await UserModel.findByEmail(email);
 
   if (user === null) {
     logger.info({ email }, 'Tentativa de login com usuário inexistente');
@@ -68,7 +68,7 @@ async function login(email: string, password: string): Promise<AccessTokenSchema
 }
 
 async function changeUserActivation(userId: string, active: boolean): Promise<UserWithoutPasswordSchema> {
-  const user = await User.findByPk(userId, {
+  const user = await UserModel.findByPk(userId, {
     attributes: { exclude: ['password'] }
   });
 
@@ -89,7 +89,7 @@ async function changeUserActivation(userId: string, active: boolean): Promise<Us
 async function getUsers(page: number, pageSize: number): Promise<IPage<UserWithoutPasswordSchema>> {
   const offset = (page - 1) * pageSize;
 
-  const { count, rows: users } = await User.findAndCountAll({
+  const { count, rows: users } = await UserModel.findAndCountAll({
     attributes: ['id', 'name', 'email', 'role', 'active'],
     limit: pageSize,
     offset,
@@ -101,7 +101,7 @@ async function getUsers(page: number, pageSize: number): Promise<IPage<UserWitho
 }
 
 async function getUserById(userId: string): Promise<UserWithAccesses> {
-  const user = await User.findWithAccessesByPk(userId);
+  const user = await UserModel.findWithAccessesByPk(userId);
 
   if (user === null) {
     logger.info({ userId }, 'Tentativa de busca por usuário inexistente');

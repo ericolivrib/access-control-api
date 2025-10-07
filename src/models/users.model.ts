@@ -6,8 +6,8 @@ import jwt from 'jsonwebtoken';
 import ms from "ms";
 import { environment } from "@/schemas/env.schema";
 import { hashPassword } from "@/utils/hash-password";
-import Access from "./accesses.model";
-import Permission from "./permissions.model";
+import AccessModel from "./accesses.model";
+import PermissionModel from "./permissions.model";
 
 export type UserRole = 'admin' | 'user';
 
@@ -18,28 +18,28 @@ interface UserAttributes {
   password: string;
   role: UserRole;
   active: boolean;
-  accesses?: Access[];
+  accesses?: AccessModel[];
 }
 
 type UserCreationAttributes = Optional<UserAttributes, 'id' | 'active' | 'role' | 'accesses'>;
 
-class User extends Model<UserAttributes, UserCreationAttributes> {
-  public static async findByEmail(email: string): Promise<User | null> {
-    return User.findOne({ where: { email } });
+class UserModel extends Model<UserAttributes, UserCreationAttributes> {
+  public static async findByEmail(email: string): Promise<UserModel | null> {
+    return UserModel.findOne({ where: { email } });
   }
 
-  public static async findWithAccessesByPk(id: string): Promise<User | null> {
-    return User.findByPk(id, {
+  public static async findWithAccessesByPk(id: string): Promise<UserModel | null> {
+    return UserModel.findByPk(id, {
       attributes: { exclude: ['password'] },
       include: {
-        model: Access,
+        model: AccessModel,
         as: 'accesses',
         required: false,
         where: {
           status: 'granted'
         },
         include: [{
-          model: Permission,
+          model: PermissionModel,
           as: 'permission'
         }]
       }
@@ -66,7 +66,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
   }
 }
 
-User.init({
+UserModel.init({
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
@@ -112,6 +112,6 @@ User.init({
   tableName: "users",
 });
 
-User.sync();
+UserModel.sync();
 
-export default User;
+export default UserModel;

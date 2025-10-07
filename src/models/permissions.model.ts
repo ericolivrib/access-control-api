@@ -1,6 +1,6 @@
 import datasource from "@/datasource";
 import { DataTypes, Model, Optional } from "sequelize";
-import Access from "./accesses.model";
+import AccessModel from "./accesses.model";
 
 export const PERMISSION_TYPES = ['revoke_access', 'grant_access', 'update_access_expiration', 'create_user', 'update_user', 'get_users', 'change_user_activation', 'get_user_accesses'] as const;
 
@@ -10,21 +10,21 @@ interface PermissionAttributes {
   id: number;
   type: PermissionType;
   description: string;
-  accesses?: Access[];
+  accesses?: AccessModel[];
 }
 
 type PermissionCreationAttributes = Optional<PermissionAttributes, 'id' | 'accesses'>;
 
-export class Permission extends Model<PermissionAttributes, PermissionCreationAttributes> {
-  static findByType(type: PermissionType): Promise<Permission | null> {
-    return Permission.findOne({
+export class PermissionModel extends Model<PermissionAttributes, PermissionCreationAttributes> {
+  static findByType(type: PermissionType): Promise<PermissionModel | null> {
+    return PermissionModel.findOne({
       attributes: ['id', 'type', 'description'],
       where: { type }
     });
   }
 }
 
-Permission.init({
+PermissionModel.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -44,6 +44,6 @@ Permission.init({
   tableName: "permissions",
 });
 
-Permission.sync();
+PermissionModel.sync();
 
-export default Permission;
+export default PermissionModel;

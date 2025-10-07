@@ -1,27 +1,27 @@
-import Access from "./accesses.model";
-import Permission from "./permissions.model";
-import User from "./users.model";
+import AccessModel from "./accesses.model";
+import PermissionModel from "./permissions.model";
+import UserModel from "./users.model";
 
 export function createModelAssociations() {
-  Access.belongsTo(Permission, {
+  AccessModel.belongsTo(PermissionModel, {
     targetKey: 'id',
     foreignKey: 'permissionId',
     as: 'permission'
   });
 
-  Permission.hasMany(Access, {
+  PermissionModel.hasMany(AccessModel, {
     sourceKey: 'id',
     foreignKey: 'permissionId',
     as: 'accesses'
   });
 
-  Access.belongsTo(User, {
+  AccessModel.belongsTo(UserModel, {
     targetKey: 'id',
     foreignKey: 'userId',
     as: 'user',
   });
 
-  User.hasMany(Access, {
+  UserModel.hasMany(AccessModel, {
     sourceKey: 'id',
     foreignKey: 'userId',
     as: 'accesses'

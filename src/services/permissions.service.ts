@@ -1,5 +1,5 @@
 import { InternalServerError } from "@/errors/InternalServerError";
-import Permission from "@/models/permissions.model";
+import PermissionModel from "@/models/permissions.model";
 import { permissionSchema, PermissionSchema } from "@/schemas/permission.schema";
 import logger from "@/utils/logger";
 
@@ -8,7 +8,7 @@ interface IPermissionsService {
 }
 
 async function getPermissions(): Promise<PermissionSchema[]> {
-  const permissions = await Permission.findAll();
+  const permissions = await PermissionModel.findAll();
 
   if (permissions.length === 0) {
     logger.error('Falha ao buscar permissões na base de dados.');

@@ -1,8 +1,8 @@
 import datasource from "@/datasource";
 import { randomUUID, UUID } from "node:crypto";
 import { DataTypes, Model, Optional } from "sequelize";
-import User from "./users.model";
-import Permission, { PermissionType } from "./permissions.model";
+import UserModel from "./users.model";
+import PermissionModel, { PermissionType } from "./permissions.model";
 
 export const ACCESS_STATUSES = ['granted', 'revoked', 'expired'] as const;
 
@@ -16,22 +16,22 @@ interface AccessAttributes {
   expiresAt: Date;
   grantedAt: Date;
   revokedAt: Date;
-  user?: User;
-  permission?: Permission;
+  user?: UserModel;
+  permission?: PermissionModel;
 }
 
 type AccessCreationAttributes = Optional<AccessAttributes, 'id' | 'status' | 'revokedAt' | 'user' | 'permission'>;
 
-class Access extends Model<AccessAttributes, AccessCreationAttributes> {
+class AccessModel extends Model<AccessAttributes, AccessCreationAttributes> {
 
   static async countGrantedByPermissionTypeAndUserId(userId: UUID, type: PermissionType): Promise<number> {
-    return Access.count({
+    return AccessModel.count({
       where: {
         userId,
         status: 'granted',
       },
       include: {
-        model: Permission,
+        model: PermissionModel,
         as: 'permission',
         where: { type }
       }
@@ -39,7 +39,7 @@ class Access extends Model<AccessAttributes, AccessCreationAttributes> {
   }
 }
 
-Access.init({
+AccessModel.init({
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
@@ -75,6 +75,6 @@ Access.init({
   tableName: "accesses",
 });
 
-Access.sync();
+AccessModel.sync();
 
-export default Access;
+export default AccessModel;

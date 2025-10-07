@@ -1,4 +1,4 @@
-import User from "../models/users.model";
+import UserModel from "../models/users.model";
 import logger from "@/utils/logger";
 import { environment } from "@/schemas/env.schema";
 
@@ -8,7 +8,7 @@ export async function seedAdminUser() {
 
   logger.info("Configurando usuário administrador...");
 
-  await User.findOrCreate({
+  await UserModel.findOrCreate({
     where: { email },
     defaults: {
       name: "Admin",
